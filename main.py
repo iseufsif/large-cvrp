@@ -4,19 +4,25 @@ import random
 from heuristics.random import generate_random_solution
 from utils.utils import compute_total_cost, write_solution, print_solution
 from utils.plot import plot_routes
+from utils.ls import ls
 
 def main():
+    random.seed(42)
     # Examplary Instance
     instance_name = "A-n45-k6.vrp"
 
     # Generate random solution
     routes, instance = generate_random_solution(instance_name)
-
-    # Calculate cost
     cost = compute_total_cost(routes, instance["edge_weight"])
-
     print_solution(routes, cost)
 
+    # Call LS
+    routes_ls = ls(instance, routes, 2000)
+    cost_ls = compute_total_cost(routes_ls, instance["edge_weight"])
+    print_solution(routes_ls, cost_ls)
+
+    
+    # Plot final result
     plot_routes(instance, routes, title=f"Random Solution for {instance_name}")
 
 if __name__ == "__main__":
