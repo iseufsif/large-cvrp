@@ -38,8 +38,8 @@ def ls_whit_swaps(instance, routes, it=100):
     while improv:
         improv = False
         for _ in range(it):
-            route_1_idx = random.randint(0,len(current_sol))
-            route_2_idx = random.randint(0,len(current_sol))
+            route_1_idx = random.randint(0,len(current_sol)-1)
+            route_2_idx = random.randint(0,len(current_sol)-1)
             neighbor = exchange_move(current_sol, route_1_idx, route_2_idx, instance)
             neighbor_length = compute_total_cost(neighbor, instance["edge_weight"])
             delta = neighbor_length - current_length # calculate delta
