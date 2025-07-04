@@ -1,10 +1,10 @@
 import vrplib # to load the instances
 import random
 
-from heuristics.random import generate_random_solution
+from heuristics.construction.random import generate_random_solution
 from utils.utils import compute_total_cost, write_solution, print_solution
 from utils.plot import plot_routes
-from utils.ls import ls
+from heuristics.metaheuristics.instensifying_components.ls import ls
 
 def main():
     random.seed(42)
@@ -21,7 +21,6 @@ def main():
     cost_ls = compute_total_cost(routes_ls, instance["edge_weight"])
     print_solution(routes_ls, cost_ls)
 
-    
     # Plot final result
     plot_routes(instance, routes, title=f"Random Solution for {instance_name}")
 

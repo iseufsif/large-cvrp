@@ -2,7 +2,7 @@
 import time
 import numpy as np
 from utils.utils import compute_total_cost
-import copy
+from heuristics.metaheuristics.neighborhood_operators.two_opt import two_opt_move
 
 def ls(instance, routes, it=100):
     current_sol = routes.copy()
@@ -27,23 +27,4 @@ def ls(instance, routes, it=100):
     return current_sol
 
 
-def two_opt_move(routes, i, j):
-    # Copy to avoid side effects
-    new_routes = copy.deepcopy(routes)
 
-    # Randomly choose a route to apply 2-opt
-    if not new_routes:
-        return new_routes
-
-    route_idx = np.random.randint(0, len(new_routes))
-    route = new_routes[route_idx]
-
-    if len(route) < 4:
-        return new_routes  # too short to improve
-
-    # Apply 2-opt (reverse segment)
-    new_route = route[:i] + list(reversed(route[i:j])) + route[j:]
-
-    new_routes[route_idx] = new_route
-
-    return new_routes
