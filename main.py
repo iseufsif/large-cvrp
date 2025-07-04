@@ -17,12 +17,12 @@ def main():
     print_solution(routes, cost)
 
     # Call LS
-    routes_ls = ls(instance, routes, 2000)
+    routes_ls = ls(instance, routes, 1000)
     cost_ls = compute_total_cost(routes_ls, instance["edge_weight"])
     print_solution(routes_ls, cost_ls)
 
     # Plot final result
-    plot_routes(instance, routes, title=f"Random Solution for {instance_name}")
+    plot_routes(instance, routes_ls, title=f"Random Solution for {instance_name}")
 
 if __name__ == "__main__":
     main()

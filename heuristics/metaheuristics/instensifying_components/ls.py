@@ -13,17 +13,17 @@ def ls(instance, routes, it=100):
     improv = True
     while improv:
         improv = False
-        for i in range(it):
-            index_1 = np.random.randint(1, len(current_sol)-2) # select two indices for two-Opt
-            index_2 = np.random.randint(index_1, len(current_sol)-1)
-            neighbor = two_opt_move(current_sol, index_1, index_2)
-            neighbor_length = compute_total_cost(neighbor, instance["edge_weight"])
-            delta = neighbor_length - current_length # calculate delta
-            if delta < 0:
-                current_sol = neighbor.copy()       # update x
-                current_length = neighbor_length    # update F(x)
-                improv = True
-                print(f"Iteration: {i} -- Current Best Solution: {current_length}")
+        
+        for r_idx in range(len(current_sol)):
+            for _ in range(it):
+                neighbor = two_opt_move(current_sol, r_idx)
+                neighbor_length = compute_total_cost(neighbor, instance["edge_weight"])
+                delta = neighbor_length - current_length # calculate delta
+                if delta < 0:
+                    current_sol = neighbor.copy()       # update x
+                    current_length = neighbor_length    # update F(x)
+                    improv = True
+                    print(f"Route {r_idx} -- Iteration {_}: Improved to cost {current_length:.2f}")
     return current_sol
 
 
