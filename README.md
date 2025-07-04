@@ -1,2 +1,3 @@
-# large-cvrp
-Computational Logistics -- using metaheurstics to solve large-scale CVRP instances.
+# Solve large scale CVRP instances with metaheuristics
+
+Course: Computational Logistics -- Final Project
