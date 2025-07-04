@@ -21,5 +21,5 @@ def exchange_move(routes, route_1_idx, route_2_idx, instance):
     if load1 - demands[node1] + demands[node2] <= capacity and load2 - demands[node2] + demands[node1] <= capacity:
         new_routes[route_1_idx][index_1] = node2
         new_routes[route_2_idx][index_2] = node1
-
+    
     return new_routes
