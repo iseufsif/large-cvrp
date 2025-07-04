@@ -1,1 +1,3 @@
+matplotlib==3.10.3
+numpy==2.3.1
 vrplib==1.5.1
