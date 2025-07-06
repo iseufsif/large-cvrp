@@ -6,6 +6,7 @@ from utils.utils import compute_total_cost, write_solution, print_solution
 from utils.plot import plot_routes
 from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps
 from heuristics.metaheuristics.diversifying_components.simulated_annealing import simulated_annealing
+from heuristics.metaheuristics.instensifying_components.tabu import tabu_search
 
 def main():
     random.seed(42)
@@ -40,8 +41,16 @@ def main():
     print_solution(routes_sa, cost_sa)
     print("-------------------")
 
+    # Call Tabu Search
+    print("--- Solution Tabu Search ---")
+    routes_tabu = tabu_search(instance, routes_sa, 500)
+    cost_tabu = compute_total_cost(routes_tabu, instance["edge_weight"])
+    print_solution(routes_tabu, cost_tabu)
+    print("----------------------")
+
     # Plot final result
-    plot_routes(instance, routes_sa, title=f"Random Solution for {instance_name}")
+
+    plot_routes(instance, routes_tabu, title=f"Random Solution for {instance_name}")
 
 if __name__ == "__main__":
     main()

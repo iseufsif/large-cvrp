@@ -4,10 +4,11 @@ import numpy as np
 import time
 from heuristics.metaheuristics.neighborhood_operators.two_opt import two_opt_move
 import math
+import copy
 
 def simulated_annealing(instance, routes, it=50, max_no_improvement=200, alpha=0.1, beta=0.9):
     # Initialize
-    current_sol = routes.copy()
+    current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
     best_sol = current_sol
     best_length = current_length

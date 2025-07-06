@@ -2,12 +2,13 @@
 import time
 import numpy as np
 import random
+import copy
 from utils.utils import compute_total_cost
 from heuristics.metaheuristics.neighborhood_operators.two_opt import two_opt_move
 from heuristics.metaheuristics.neighborhood_operators.exchange import exchange_move
 
 def ls_with_2opt(instance, routes, it=100):
-    current_sol = routes.copy()
+    current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
     
     # Start LS
@@ -29,7 +30,7 @@ def ls_with_2opt(instance, routes, it=100):
     return current_sol
 
 def ls_with_swaps(instance, routes, it=100):
-    current_sol = routes.copy()
+    current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
     
     # Start LS
