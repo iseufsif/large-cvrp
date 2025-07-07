@@ -7,11 +7,29 @@ from utils.plot import plot_routes
 from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps
 from heuristics.metaheuristics.diversifying_components.simulated_annealing import simulated_annealing
 from heuristics.metaheuristics.instensifying_components.tabu import tabu_search
+from heuristics.metaheuristics.diversifying_components.genetic_algorithm import genetic_algorithm
 
 def main():
     random.seed(42)
     # Examplary Instance
     instance_name = "A-n45-k6.vrp"
+    
+    """# Random initial population for GA
+    initial_population = []
+    for i in range(10):
+        routes, instance = generate_random_solution(instance_name)
+        initial_population.append(routes)
+        cost = compute_total_cost(routes, instance["edge_weight"])
+        print(f"Solution {i} in initial population = {routes},\nCost = {cost}")
+    print("---------------------------")
+    
+    # Call GA
+    print("--- Solution GA ---")
+    routes_ga = genetic_algorithm(initial_population, instance)
+    cost_ga = compute_total_cost(routes_ga, instance["edge_weight"])
+    print_solution(routes_ga, cost_ga)
+    print("---------------------------")"""
+
 
     # Generate random solution
     print("--- Randomized Solution ---")
