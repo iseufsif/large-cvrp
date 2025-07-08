@@ -16,7 +16,8 @@ def main():
     
     """# Random initial population for GA
     initial_population = []
-    for i in range(10):
+    pop_size = 4
+    for i in range(pop_size):
         routes, instance = generate_random_solution(instance_name)
         initial_population.append(routes)
         cost = compute_total_cost(routes, instance["edge_weight"])
@@ -25,7 +26,7 @@ def main():
     
     # Call GA
     print("--- Solution GA ---")
-    routes_ga = genetic_algorithm(initial_population, instance)
+    routes_ga = genetic_algorithm(initial_population, instance, pop_size)
     cost_ga = compute_total_cost(routes_ga, instance["edge_weight"])
     print_solution(routes_ga, cost_ga)
     print("---------------------------")"""
