@@ -92,6 +92,7 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
         pop.append(ind)
     fitness(pop)
     calculate_probabilities(pop)
+    
     # Parameters
     p_rek = 0.7
     p_mut = 0.3
@@ -116,12 +117,11 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
             else:
                 child = parent_1
                 print("No Crossover Performed")
-            # Mutation
+            # Mutation        
             if np.random.random() < p_mut:
                 mutation(child)
             else:
                 print("No mutation Performed")
-            
             child_decoded = decoding(child)
             # Solve TSP for each route
             new_routes = [] 
@@ -130,6 +130,7 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
                 sequenced_route, route_length = tsp_solver_nn(route, instance["edge_weight"])
                 new_routes.append(sequenced_route)  
                 total_length += route_length 
+            
             # Check the capacity constraint
             feasibility = capacity_check(new_routes, instance)
             if feasibility is True:

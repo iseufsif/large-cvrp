@@ -36,6 +36,7 @@ def ls_with_swaps(instance, routes, it=100):
     # Start LS
     # start_time = time.time()
     improv = True
+    iter = 1
     while improv:
         improv = False
         for _ in range(it):
@@ -48,7 +49,8 @@ def ls_with_swaps(instance, routes, it=100):
                 current_sol = neighbor.copy()       # update x
                 current_length = neighbor_length    # update F(x)
                 improv = True
-                print(f"Swap among routes {route_1_idx} and {route_2_idx} in Iteration {_}: Improved to cost {current_length:.2f}")
+                print(f"Swap among routes {route_1_idx} and {route_2_idx} in Iteration {iter}.{_}: Improved to cost {current_length:.2f}")
+        iter += 1
     return current_sol
 
 

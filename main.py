@@ -8,6 +8,7 @@ from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, 
 from heuristics.metaheuristics.diversifying_components.simulated_annealing import simulated_annealing
 from heuristics.metaheuristics.instensifying_components.tabu import tabu_search
 from heuristics.metaheuristics.diversifying_components.genetic_algorithm import genetic_algorithm
+from heuristics.metaheuristics.diversifying_components.hybrid_genetic_search import HGS
 
 def main():
     random.seed(42)
@@ -26,7 +27,7 @@ def main():
     
     # Call GA
     print("--- Solution GA ---")
-    routes_ga = genetic_algorithm(initial_population, instance, pop_size)
+    routes_ga = HGS(initial_population, instance, pop_size)
     cost_ga = compute_total_cost(routes_ga, instance["edge_weight"])
     print_solution(routes_ga, cost_ga)
     print("---------------------------")"""
