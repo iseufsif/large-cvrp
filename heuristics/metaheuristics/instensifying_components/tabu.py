@@ -53,7 +53,7 @@ def tabu_search(instance, routes, it = 100):
                     if delta_best < best_delta:
                         best_solution = neighbor.copy()
                         best_delta = delta_best
-                        print(f"In Iteration {k}: Improved to cost {current_best_length + best_delta:.2f}")
+                        # print(f"In Iteration {k}: Improved to cost {current_best_length + best_delta:.2f}")
         # Update the tabo list:
         if to_be_added != None:         
             tabu_list.append(to_be_added) 

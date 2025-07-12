@@ -26,7 +26,7 @@ def ls_with_2opt(instance, routes, it=100):
                     current_sol = neighbor.copy()       # update x
                     current_length = neighbor_length    # update F(x)
                     improv = True
-                    print(f"Route {r_idx} -- Iteration {_}: Improved to cost {current_length:.2f}")
+                    # print(f"Route {r_idx} -- Iteration {_}: Improved to cost {current_length:.2f}")
     return current_sol
 
 def ls_with_swaps(instance, routes, it=100):
@@ -49,7 +49,7 @@ def ls_with_swaps(instance, routes, it=100):
                 current_sol = neighbor.copy()       # update x
                 current_length = neighbor_length    # update F(x)
                 improv = True
-                print(f"Swap among routes {route_1_idx} and {route_2_idx} in Iteration {iter}.{_}: Improved to cost {current_length:.2f}")
+                # print(f"Swap among routes {route_1_idx} and {route_2_idx} in Iteration {iter}.{_}: Improved to cost {current_length:.2f}")
         iter += 1
     return current_sol
 

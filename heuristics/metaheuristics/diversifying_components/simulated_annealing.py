@@ -36,7 +36,7 @@ def simulated_annealing(instance, routes, it=50, max_no_improvement=200, alpha=0
                     if current_length < best_length:
                         best_sol = neighbor.copy()
                         best_length = neighbor_length
-                        print(f"Route {r_idx}: New best solution value: {best_length}")
+                        # print(f"Route {r_idx}: New best solution value: {best_length}")
                 elif np.random.random() <  math.exp(-delta / temperature):
                     current_sol = neighbor.copy()
                     current_length = neighbor_length
