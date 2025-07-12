@@ -4,7 +4,7 @@ def plot_routes(instance, routes, title="CVRP Solution"):
     coords = instance["node_coord"]         # shape: (n, 2), with depot at index 0
     depot = coords[0]
 
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(8, 5))
     plt.title(title)
 
     # Plot depot
@@ -26,7 +26,7 @@ def plot_routes(instance, routes, title="CVRP Solution"):
 
     plt.xlabel("X")
     plt.ylabel("Y")
-    plt.legend()
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), ncol=6)
     plt.grid(True)
     plt.tight_layout()
     plt.show()

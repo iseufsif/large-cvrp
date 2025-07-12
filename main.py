@@ -47,7 +47,7 @@ def main():
     log_results("Standalone Tabu Search", tabu_routes, instance, history)
 
     # LNS
-    lns_routes = lns(instance, random_routes, 500)
+    lns_routes = lns(instance, random_routes, 1000)
     log_results("Standalone LNS", lns_routes, instance, history)
 
 
