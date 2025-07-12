@@ -3,7 +3,8 @@ import random
 from heuristics.construction.random import generate_random_solution
 from utils.utils import compute_total_cost, write_solution, print_solution, log_results
 from utils.plot import plot_routes
-from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps
+from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps, hybrid_ls
+from heuristics.metaheuristics.instensifying_components.ils import iterated_local_search
 from heuristics.metaheuristics.diversifying_components.simulated_annealing import simulated_annealing
 from heuristics.metaheuristics.instensifying_components.tabu import tabu_search
 from heuristics.metaheuristics.diversifying_components.genetic_algorithm import genetic_algorithm
@@ -31,8 +32,12 @@ def main():
     log_results("Local Search (2-Opt)", ls_2opt_routes, instance, history)
 
     # Local Search Pipeline - Swap -> 2-Opt
-    ls_pipeline_routes = ls_with_2opt(instance, ls_swap_routes, 1000)
+    ls_pipeline_routes = hybrid_ls(instance, random_routes, 1000)
     log_results("Local Search Pipeline", ls_pipeline_routes, instance, history)
+
+    # Iterated Local Search - Using Hybrid LS by default
+    ils_routes = iterated_local_search(instance, random_routes, ls=hybrid_ls, it=100, destroy_factor=0.1)
+    log_results("Iterated LS", ils_routes, instance, history)
 
     # Standalone Simulated Annealing
     sa_routes = simulated_annealing(instance, random_routes)

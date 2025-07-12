@@ -53,5 +53,7 @@ def ls_with_swaps(instance, routes, it=100):
         iter += 1
     return current_sol
 
-
-
+def hybrid_ls(instance, routes, it=100):
+    ls1 = ls_with_swaps(instance, routes, it)
+    ls2 = ls_with_2opt(instance, ls1, it)
+    return ls2
