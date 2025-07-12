@@ -55,6 +55,9 @@ def main():
     lns_routes = lns(instance, random_routes, 1000)
     log_results("Standalone LNS", lns_routes, instance, history)
 
+    # LNS + ILS Hybrid
+    lns_ils_routes = iterated_local_search(instance, lns_routes)
+    log_results("LNS + ILS", lns_ils_routes, instance, history)
 
     """# Random initial population for GA
     initial_population = []
