@@ -25,6 +25,8 @@ def simulated_annealing(instance, routes, it=50, max_no_improvement=200, alpha=0
     while no_improv < max_no_improvement:
         improv = False
         for r_idx in range(len(current_sol)):
+            if len(current_sol[r_idx]) < 3:
+                continue  # skip short routes
             for _ in range(it):
                 neighbor = two_opt_move(current_sol, r_idx)
                 neighbor_length = compute_total_cost(neighbor, instance["edge_weight"])

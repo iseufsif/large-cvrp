@@ -1,7 +1,8 @@
 import random
+import time
 
 from heuristics.construction.random import generate_random_solution
-from utils.utils import compute_total_cost, write_solution, print_solution, log_results
+from utils.utils import compute_total_cost, write_solution, print_solution, log_results, get_bks
 from utils.plot import plot_routes
 from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps, hybrid_ls
 from heuristics.metaheuristics.instensifying_components.ils import iterated_local_search
@@ -13,51 +14,73 @@ from heuristics.metaheuristics.diversifying_components.lns import lns
 
 
 def main():
+    total_start = time.time()
     history = []
 
     random.seed(42)
     # Examplary Instance
-    instance_name = "A-n45-k6.vrp"
+    instance_name = "X-n101-k25.vrp"
+    bks = get_bks(instance_name)
 
     # Generate random initial solution and initialize instance
+    start = time.time()
     random_routes, instance = generate_random_solution(instance_name)
-    log_results("Random Solution", random_routes, instance, history)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Random Solution", random_routes, instance, history, runtime=elapsed, bks=bks)
     
     # Standalone Local Search - Swap-based
-    ls_swap_routes = ls_with_swaps(instance, random_routes, 1000)
-    log_results("Local Search (Swaps)", ls_swap_routes, instance, history)
+    start = time.time()
+    ls_swap_routes = ls_with_swaps(instance, random_routes, 100)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Local Search (Swaps)", ls_swap_routes, instance, history, runtime=elapsed, bks=bks)
 
     # Standalone Local Search - 2-Opt
-    ls_2opt_routes = ls_with_2opt(instance, random_routes, 1000)
-    log_results("Local Search (2-Opt)", ls_2opt_routes, instance, history)
+    start = time.time()
+    ls_2opt_routes = ls_with_2opt(instance, random_routes, 100)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Local Search (2-Opt)", ls_2opt_routes, instance, history, runtime=elapsed, bks=bks)
 
     # Local Search Pipeline - Swap -> 2-Opt
-    ls_pipeline_routes = hybrid_ls(instance, random_routes, 1000)
-    log_results("Local Search Pipeline", ls_pipeline_routes, instance, history)
+    start = time.time()
+    ls_pipeline_routes = hybrid_ls(instance, random_routes, 100)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Local Search Pipeline", ls_pipeline_routes, instance, history, runtime=elapsed, bks=bks)
 
     # Iterated Local Search - Using Hybrid LS by default
-    ils_routes = iterated_local_search(instance, random_routes, ls=hybrid_ls, it=100, destroy_factor=0.1)
-    log_results("Iterated LS", ils_routes, instance, history)
+    start = time.time()
+    ils_routes = iterated_local_search(instance, random_routes, ls=hybrid_ls, it=50, destroy_factor=0.1)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Iterated LS", ils_routes, instance, history, runtime=elapsed, bks=bks)
 
     # Standalone Simulated Annealing
+    start = time.time()
     sa_routes = simulated_annealing(instance, random_routes)
-    log_results("Standalone SA", sa_routes, instance, history)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Standalone SA", sa_routes, instance, history, runtime=elapsed, bks=bks)
 
     # LS + Simulated Annealing
+    start = time.time()
     ls_sa_routes = simulated_annealing(instance, ls_pipeline_routes)
-    log_results("LS Pipeline + SA", ls_sa_routes, instance, history)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("LS Pipeline + SA", ls_sa_routes, instance, history, runtime=elapsed, bks=bks)
 
     # Tabu Search
-    tabu_routes = tabu_search(instance, random_routes, 500)
-    log_results("Standalone Tabu Search", tabu_routes, instance, history)
+    start = time.time()
+    tabu_routes = tabu_search(instance, random_routes, 50)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Standalone Tabu Search", tabu_routes, instance, history, runtime=elapsed, bks=bks)
 
     # LNS
-    lns_routes = lns(instance, random_routes, 1000)
-    log_results("Standalone LNS", lns_routes, instance, history)
+    start = time.time()
+    lns_routes = lns(instance, random_routes, 100)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Standalone LNS", lns_routes, instance, history, runtime=elapsed, bks=bks)
 
     # LNS + ILS Hybrid
+    start = time.time()
     lns_ils_routes = iterated_local_search(instance, lns_routes)
-    log_results("LNS + ILS", lns_ils_routes, instance, history)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("LNS + ILS", lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
 
     """# Random initial population for GA
     initial_population = []
@@ -76,13 +99,22 @@ def main():
     print_solution(routes_ga, cost_ga)
     print("---------------------------")"""
 
+    total_runtime = round((time.time() - total_start) / 60, 4)
+
     # Print overview of all results
-    print("\n======= Heuristic Comparison =======")
-    for label, cost, _ in history:
-        print(f"{label:<25} | Cost: {cost}")
+    print("\n==================== Heuristic Comparison ====================")
+    print(f"\nInstance Name: {instance_name}")
+    print(f"Best Known Solution: {bks}")
+    print(f"\n{'Label':<25} | {'Cost':<10} | {'Gap (%)':<8} | {'Time (min)':<10}")
+    print("-" * 62)
+    for label, cost, gap, runtime, _ in history:
+        gap_str = f"{gap:.2f}" if gap is not None else "N/A"
+        print(f"{label:<25} | {cost:<10.2f} | {gap_str:<8}% | {runtime:<10.4f}")
+
+    print(f"\nTotal Runtime in Minutes: {total_runtime}")
 
     # Identify best solution from history and plot this one
-    best_label, best_cost, best_routes = min(history, key=lambda x: x[1])
+    best_label, best_cost, _, _, best_routes = min(history, key=lambda x: x[1])
     plot_routes(instance, best_routes, title=f"Best: {best_label} (Cost: {best_cost})")
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-
+import os
 
 def compute_total_cost(routes, edge_weight):
     total_cost = 0
@@ -25,9 +25,19 @@ def is_feasible(route, instance):
     total_demand = sum(instance["demand"][cust] for cust in route)
     return total_demand <= instance["capacity"]
 
-def log_results(label, routes, instance, history):
+def log_results(label, routes, instance, history, runtime=None, bks=None):
     cost = round(compute_total_cost(routes, instance["edge_weight"]), 4)
     assert all(is_feasible(r, instance) for r in routes), \
         f"Infeasible solution detected in {label}"
-    history.append((label, cost, routes))
+    # Calculate the gap in percent between our solutions and the best known solution (bks)
+    gap = ((cost - bks) / bks * 100) if bks else None
+    history.append((label, cost, gap, runtime, routes))
     # print(f"{label:<25} | Cost: {cost}")
+
+def get_bks(instance_name):
+    sol_file = os.path.join("solutions", instance_name.replace(".vrp", ".sol"))
+    with open(sol_file, "r") as f:
+        for line in f:
+            if line.startswith("Cost"):
+                return float(line.split()[1])
+    raise ValueError(f"No cost line found in {sol_file}")

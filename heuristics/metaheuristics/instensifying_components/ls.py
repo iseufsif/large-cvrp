@@ -18,6 +18,8 @@ def ls_with_2opt(instance, routes, it=100):
         improv = False
         
         for r_idx in range(len(current_sol)):
+            if len(current_sol[r_idx]) < 3:
+                continue  # skip too-short routes
             for _ in range(it):
                 neighbor = two_opt_move(current_sol, r_idx)
                 neighbor_length = compute_total_cost(neighbor, instance["edge_weight"])
