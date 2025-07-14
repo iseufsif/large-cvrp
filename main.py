@@ -11,7 +11,7 @@ from heuristics.metaheuristics.instensifying_components.tabu import tabu_search
 from heuristics.metaheuristics.diversifying_components.genetic_algorithm import genetic_algorithm
 from heuristics.metaheuristics.diversifying_components.hybrid_genetic_search import HGS
 from heuristics.metaheuristics.diversifying_components.lns import lns
-
+from utils.tsp_solvers_for_GA import tsp_solver_nn
 
 def main():
     total_start = time.time()
@@ -21,9 +21,8 @@ def main():
     # Examplary Instance
     instance_name = "X-n101-k25.vrp"
     bks = get_bks(instance_name)
-
     # Generate random initial solution and initialize instance
-    start = time.time()
+    """start = time.time()
     random_routes, instance = generate_random_solution(instance_name)
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Random Solution", random_routes, instance, history, runtime=elapsed, bks=bks)
@@ -81,23 +80,19 @@ def main():
     lns_ils_routes = iterated_local_search(instance, lns_routes)
     elapsed = round((time.time() - start) / 60, 4)
     log_results("LNS + ILS", lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
+    """
 
-    """# Random initial population for GA
+    # GA
+    start = time.time()
     initial_population = []
-    pop_size = 4
+    pop_size = 40
     for i in range(pop_size):
         routes, instance = generate_random_solution(instance_name)
         initial_population.append(routes)
-        cost = compute_total_cost(routes, instance["edge_weight"])
-        print(f"Solution {i} in initial population = {routes},\nCost = {cost}")
-    print("---------------------------")
-    
-    # Call GA
-    print("--- Solution GA ---")
     routes_ga = HGS(initial_population, instance, pop_size)
-    cost_ga = compute_total_cost(routes_ga, instance["edge_weight"])
-    print_solution(routes_ga, cost_ga)
-    print("---------------------------")"""
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Genetic Algorithm", routes_ga, instance, history, runtime=elapsed, bks=bks)
+
 
     total_runtime = round((time.time() - total_start) / 60, 4)
 

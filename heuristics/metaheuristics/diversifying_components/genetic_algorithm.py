@@ -42,7 +42,7 @@ def uniform_crossover(parent_1, parent_2, p = 0.95):
             child[i] = parent_1[i]
         else:
             child[i] = parent_2[i]
-    print(f"Crossover performed: {child}")
+    #print(f"Crossover performed: {child}")
     return child
 
 def mutation(child, p = 0.5):
@@ -51,7 +51,7 @@ def mutation(child, p = 0.5):
     for i in range(len(child)):
         if np.random.random() < p:
             child[i] = random.randint(0,num_vehicles-1) # Node assigned to a tour randomly
-    print(f"Mutation performed: {child}")
+    #print(f"Mutation performed: {child}")
     return child
 
 def capacity_check(routes, instance):
@@ -64,9 +64,8 @@ def capacity_check(routes, instance):
         for node in routes[route]:
             loads[route] += demands[node]
             if loads[route] > capacity:
-                print("Infeasible Solution")
                 return False
-    print("Feasible Solution")
+    #print("Feasible Solution")
     return True
 
 def fitness(population):
@@ -96,7 +95,7 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
     # Parameters
     p_rek = 0.7
     p_mut = 0.3
-    gen_size = 20
+    gen_size = 25
 
     no_improv = 0
     it = 1
@@ -106,7 +105,7 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
     while no_improv < max_no_improv: 
         fitness(pop)
         calculate_probabilities(pop)
-        print(f"\nIteration {it}")
+        #print(f"\nIteration {it}")
         for _ in range(gen_size):
             # Parent Selection
             parent_1 = parent_selection(pop)
@@ -116,12 +115,10 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
                 child = uniform_crossover(parent_1, parent_2)
             else:
                 child = parent_1
-                print("No Crossover Performed")
             # Mutation        
             if np.random.random() < p_mut:
                 mutation(child)
-            else:
-                print("No mutation Performed")
+
             child_decoded = decoding(child)
             # Solve TSP for each route
             new_routes = [] 
@@ -133,10 +130,8 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
             
             # Check the capacity constraint
             feasibility = capacity_check(new_routes, instance)
-            if feasibility is True:
-                print("Cost New Feasible Solution=", total_length)
-            else:
-                total_length += 10*total_length # Penalty approach for infeasible solutions
+            if feasibility is False:
+                total_length = 10*total_length # Penalty approach for infeasible solutions
             # Update population
             pop.append({"cromosoms":child, "Z": total_length, "f":0, "p":0, "range":[0,1], "feasible": feasibility})
 
@@ -146,8 +141,8 @@ def genetic_algorithm(initial_population, instance, pop_size, max_no_improv = 50
             best_cost = pop[0]["Z"]
             best_sol = pop[0]["cromosoms"]
             no_improv = 0
-            print(f"In iteration {it}, populatio = {pop}")
-            print(f"In Iteration {it}: Improved to cost {best_cost:.2f}")
+            #print(f"In iteration {it}, populatio = {pop}")
+            #print(f"In Iteration {it}: Improved to cost {best_cost:.2f}")
         else:
             no_improv += 1
         it +=1
