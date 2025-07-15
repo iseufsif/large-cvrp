@@ -89,7 +89,7 @@ def main():
     for i in range(pop_size):
         routes, instance = generate_random_solution(instance_name)
         initial_population.append(routes)
-    routes_ga = HGS(initial_population, instance, pop_size)
+    routes_ga = genetic_algorithm(initial_population, instance, pop_size, instance_name)
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Genetic Algorithm", routes_ga, instance, history, runtime=elapsed, bks=bks)
 

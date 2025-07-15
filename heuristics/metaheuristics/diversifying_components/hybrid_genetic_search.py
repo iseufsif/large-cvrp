@@ -1,4 +1,4 @@
-from heuristics.metaheuristics.diversifying_components.genetic_algorithm import fitness, calculate_probabilities, parent_selection, encoding, decoding, uniform_crossover, capacity_check, mutation
+from heuristics.metaheuristics.diversifying_components.genetic_algorithm import fitness_quality, calculate_probabilities, parent_selection, encoding, decoding, uniform_crossover, capacity_check, mutation
 from utils.tsp_solvers_for_GA import tsp_solver_nn, tsp_solver_ls
 from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
 import numpy as np
@@ -31,7 +31,7 @@ def HGS(initial_population, instance, pop_size, max_no_improv = 50):
     for sol in initial_population:
         ind = encoding(sol, instance)
         pop.append(ind)
-    fitness(pop)
+    fitness_quality(pop)
     calculate_probabilities(pop)
     
     gen_size = 25
@@ -46,7 +46,7 @@ def HGS(initial_population, instance, pop_size, max_no_improv = 50):
     # Algorithm
     while no_improv < max_no_improv: 
         new_best_sol_found = False
-        fitness(pop)
+        fitness_quality(pop)
         calculate_probabilities(pop)
         #print(f"\nIteration {it}")
         for _ in range(gen_size):
