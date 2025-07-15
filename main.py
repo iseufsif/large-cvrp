@@ -11,7 +11,7 @@ from heuristics.metaheuristics.diversifying_components.simulated_annealing impor
 from heuristics.metaheuristics.instensifying_components.tabu import tabu_search
 from heuristics.metaheuristics.diversifying_components.genetic_algorithm import genetic_algorithm
 from heuristics.metaheuristics.diversifying_components.hybrid_genetic_search import HGS
-from heuristics.metaheuristics.diversifying_components.lns import lns
+from heuristics.metaheuristics.diversifying_components.lns import fast_lns, smart_lns
 from utils.tsp_solvers_for_GA import tsp_solver_nn
 
 def main():
@@ -77,17 +77,29 @@ def main():
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Standalone Tabu Search", tabu_routes, instance, history, runtime=elapsed, bks=bks)
 
-    # LNS
+    # Fast LNS
     start = time.time()
-    lns_routes = lns(instance, savings_routes, 100)
+    fast_lns_routes = fast_lns(instance, savings_routes, 100)
     elapsed = round((time.time() - start) / 60, 4)
-    log_results("Standalone LNS", lns_routes, instance, history, runtime=elapsed, bks=bks)
+    log_results("Fast LNS", fast_lns_routes, instance, history, runtime=elapsed, bks=bks)
 
-    # LNS + ILS Hybrid
+    # Fast LNS
     start = time.time()
-    lns_ils_routes = iterated_local_search(instance, lns_routes)
+    smart_lns_routes = smart_lns(instance, savings_routes, 100)
     elapsed = round((time.time() - start) / 60, 4)
-    log_results("LNS + ILS", lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
+    log_results("Smart LNS", smart_lns_routes, instance, history, runtime=elapsed, bks=bks)
+
+    # Fast LNS + ILS Hybrid
+    start = time.time()
+    fast_lns_ils_routes = iterated_local_search(instance, fast_lns_routes)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Fast LNS + ILS", fast_lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
+
+    # Fast LNS + ILS Hybrid
+    start = time.time()
+    smart_lns_ils_routes = iterated_local_search(instance, smart_lns_routes)
+    elapsed = round((time.time() - start) / 60, 4)
+    log_results("Smart LNS + ILS", smart_lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
 
     # GA
     start = time.time()
