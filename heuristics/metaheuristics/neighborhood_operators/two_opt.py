@@ -3,7 +3,7 @@ import numpy as np
 
 def two_opt_move(routes, route_idx):
     # Copy to avoid side effects
-    new_routes = copy.deepcopy(routes)
+    new_routes = routes.copy()
 
     # Randomly choose a route to apply 2-opt
     if not new_routes:

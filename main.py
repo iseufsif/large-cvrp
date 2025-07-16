@@ -24,7 +24,7 @@ def main():
     bks = get_bks(instance_name)
     
     # Generate random initial solution and initialize instance
-    start = time.time()
+    """start = time.time()
     random_routes, instance = generate_random_solution(instance_name)
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Random Solution", random_routes, instance, history, runtime=elapsed, bks=bks)
@@ -99,19 +99,14 @@ def main():
     start = time.time()
     smart_lns_ils_routes = iterated_local_search(instance, smart_lns_routes)
     elapsed = round((time.time() - start) / 60, 4)
-    log_results("Smart LNS + ILS", smart_lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
+    log_results("Smart LNS + ILS", smart_lns_ils_routes, instance, history, runtime=elapsed, bks=bks)"""
 
     # GA
     start = time.time()
-    initial_population = []
-    pop_size = 40
-    for i in range(pop_size):
-        routes, instance_ga = generate_random_solution(instance_name)
-        initial_population.append(routes)
-    routes_ga = genetic_algorithm(initial_population, instance, pop_size, instance_name)
+    r, instance = generate_random_solution(instance_name)
+    routes_ga = HGS(instance, pop_size = 40)
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Genetic Algorithm", routes_ga, instance, history, runtime=elapsed, bks=bks)
-
 
     total_runtime = round((time.time() - total_start) / 60, 4)
 

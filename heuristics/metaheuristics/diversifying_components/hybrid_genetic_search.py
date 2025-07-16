@@ -1,4 +1,4 @@
-from heuristics.metaheuristics.diversifying_components.genetic_algorithm import fitness_quality, calculate_probabilities, parent_selection, encoding, decoding, uniform_crossover, capacity_check, mutation
+from heuristics.metaheuristics.diversifying_components.genetic_algorithm import split,fitness_quality, calculate_probabilities, parent_selection, order_crossover,capacity_check, calculate_combined_fitness, diversity
 from utils.tsp_solvers_for_GA import tsp_solver_nn, tsp_solver_ls
 from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
 import numpy as np
@@ -6,38 +6,34 @@ from utils.utils import compute_total_cost
 import random
 import math
 
-def order_crossover(parent1, parent2):
-    size = len(parent1)
-
-    start, end = sorted(random.sample(range(size), 2))
-
-    child = [None] * size
-    child[start:end + 1] = parent1[start:end + 1]
-
-    current_index = (end + 1) % size
-    parent2_index = (end + 1) % size
-
-    while None in child:
-        gene = parent2[parent2_index]
-        child[current_index] = gene
-        current_index = (current_index + 1) % size
-        parent2_index = (parent2_index + 1) % size
-
-    return child
-
-def HGS(initial_population, instance, pop_size, max_no_improv = 50):
+def HGS(instance, pop_size, max_no_improv = 100):
     # Initialize the population of individuals
     pop = [] 
-    for sol in initial_population:
-        ind = encoding(sol, instance)
-        pop.append(ind)
+    for i in range(pop_size):
+        individual = {
+        "cromosoms": np.random.permutation(list(range(1, instance["dimension"]))).tolist(),
+        "Z": 0,
+        "f": 0,
+        "div": 0,
+        "fitness_combined": 0,
+        "p": 0,
+        "range": [0, 1],
+        "feasible": True}
+        sol = split(individual["cromosoms"], instance["demand"], instance["capacity"])
+        individual["Z"] = compute_total_cost(sol, instance["edge_weight"])
+        individual["feasible"] = capacity_check(sol, instance)
+        pop.append(individual)
+
+    n_elite = 4
+
     fitness_quality(pop)
+    diversity(pop)
+    calculate_combined_fitness(pop, n_elite)
     calculate_probabilities(pop)
     
     gen_size = 25
     penalty = 3
     ref_ratio = 0.2
-    n_elite = 4
     no_improv = 0
     it = 1
     it_ls = 0
@@ -47,65 +43,67 @@ def HGS(initial_population, instance, pop_size, max_no_improv = 50):
     while no_improv < max_no_improv: 
         new_best_sol_found = False
         fitness_quality(pop)
+        if it%5 == 0:
+            diversity(pop)
+        calculate_combined_fitness(pop, n_elite)
         calculate_probabilities(pop)
         #print(f"\nIteration {it}")
         for _ in range(gen_size):
             # Parent Selection
-            pop_sorted = sorted(pop, key=lambda x: x["Z"])
-            elite = pop_sorted[:n_elite] # First Parent among the top n_elite solutions 
-            diverse = pop_sorted[n_elite:] 
-
-            parent_1 = parent_selection(elite)
-            parent_2 = parent_selection(diverse)
+            parent_1 = parent_selection(pop)
+            parent_2 = parent_selection(pop)
     
             # Reprodcution
-            child = uniform_crossover(parent_1, parent_2)
-            child_decoded = decoding(child)
+            child = order_crossover(parent_1, parent_2)
+            routes = split(child, instance["demand"], instance["capacity"])
             # Educate child using Nearest Neighbor and Local Search
             new_routes = [] 
             total_length = 0
-            for route in child_decoded:
+            for route in routes:
                 sequenced_route, route_length = tsp_solver_nn(route, instance["edge_weight"])
-                new_routes.append(sequenced_route)  
+                new_routes.append(sequenced_route)
+                total_length += route_length  
 
-            estimated_cost = compute_total_cost(new_routes, instance["edge_weight"])
-            if estimated_cost > 1.5 *best_cost:
-                #print("SKIPPED")
+            if  total_length > 1.5 *best_cost:
                 continue  # skip LS on bad offspring
-            #elif estimated_cost < 1.1 * best_cost:
-               # print("APPEALING")
-                #child_ls = hybrid_ls(instance, new_routes, 20) # Deeper search for appealing solutions
             else:
-                #print("NORMAL")
                 child_ls = hybrid_ls(instance, new_routes, min(10, 3 + it_ls))
             
             total_length = compute_total_cost(child_ls, instance["edge_weight"])
             # Check the capacity constraint
             feasibility = capacity_check(child_ls, instance)
             if feasibility is True:
-                #print("Cost New Feasible Solution=", total_length)
                 if total_length < best_cost:
                     best_cost = total_length
                     best_sol = child_ls
                     new_best_sol_found = True
-                    #print(f"In Iteration {it}: Improved to cost {best_cost:.2f}")
             else:
                 total_length = penalty*total_length # Penalty approach for infeasible solutions
             # Update population
-            pop.append({"cromosoms":child, "Z": total_length, "f":0, "p":0, "range":[0,1], "feasible": feasibility})
+            pop.append({"cromosoms":[node for route in new_routes for node in route], # Encoding of the child educated with LS
+                        "Z": total_length, 
+                        "f":0, 
+                        "div":0, 
+                        "fitness_combined":0, 
+                        "p":0, 
+                        "range":[0,1], 
+                        "feasible": feasibility})
 
         # Replacement
         pop = sorted(pop, key=lambda ind: ind["Z"])[:pop_size+gen_size]
-        #print(f"In iteration {it}, population = {pop}")
+       
+        # Population Management
         num_infeasible = 0
         num_feasible = 0
-
-        # Population Management
         for sol in pop:
             if sol["feasible"] is True:
                 num_feasible += 1
             else:
                 num_infeasible += 1 
+
+        if num_feasible == 0:
+            penalty = penalty*2
+            continue
 
         ratio = num_infeasible/num_feasible
 
@@ -121,8 +119,8 @@ def HGS(initial_population, instance, pop_size, max_no_improv = 50):
             no_improv += 1
         print(no_improv)
         it +=1
-        if it%10 == 0:
-            it_ls += 1
+        if it%50 == 0:
+            it_ls += 1 # As the algorithm proceeds we increase the iterations of LS
 
     return best_sol
     

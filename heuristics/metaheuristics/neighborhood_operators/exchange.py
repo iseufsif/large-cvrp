@@ -7,7 +7,9 @@ def exchange_move(routes, route_1_idx, route_2_idx, instance):
     capacity = instance["capacity"]
     demands = instance["demand"]
     
-    new_routes = copy.deepcopy(routes)
+    new_routes = routes.copy()
+    new_routes[route_1_idx] = routes[route_1_idx].copy()
+    new_routes[route_2_idx] = routes[route_2_idx].copy()
     
     if route_1_idx == route_2_idx:
         return routes

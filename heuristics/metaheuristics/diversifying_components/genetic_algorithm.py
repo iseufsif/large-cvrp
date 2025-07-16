@@ -5,38 +5,40 @@ import copy
 import random
 from utils.tsp_solvers_for_GA import tsp_solver_ls, tsp_solver_nn
 from heuristics.construction.random import generate_random_solution
+from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
 
-def encoding(routes, instance):
-    n = instance["dimension"]
-    individual = {"cromosoms":[], "Z": compute_total_cost(routes, instance["edge_weight"]), "f": 0, "div": 0, "p": 0, "range": [0,1],  "feasible": True}
-    for node in range(n):
-        for route in range(len(routes)):
-            if node in routes[route]:
-                individual["cromosoms"].append(route)
-                break
-    return individual
-
-def decoding(child):
-    num_vehicles = max(child) + 1
-    routes = [[] for _ in range(num_vehicles)]
-    for node in range(len(child)):
-        for route in range(num_vehicles):
-            if child[node] == route:
-                routes[route].append(node+1)
+def split(permutation, demand, capacity):
+    n = len(permutation)
+    routes = []
+    not_assigned = copy.copy(permutation)
+    route = []
+    load = 0
+    i=0
+    while len(not_assigned) != 0:
+        if load + demand[permutation[i]] <= capacity:
+            route.append(permutation[i]) 
+            load += demand[permutation[i]]
+            not_assigned.remove(permutation[i])
+        else:
+            routes.append(route)
+            route = [permutation[i]]
+            load = demand[permutation[i]]
+            not_assigned.remove(permutation[i])
+        i+=1
+    routes.append(route)
     return routes
+    
 
 def parent_selection(population):
-
+    # Rank based selecton
     pop_sorted = sorted(population, key=lambda x: x["fitness_combined"])
 
     for rank, individual in enumerate(pop_sorted):
         individual["total_rank"] = rank
     
     random_num_selection = np.random.random()
-    #print(f"Random number: {random_num_selection}")
     for individual in population:
         if random_num_selection > individual["range"][0] and random_num_selection < individual["range"][1]:
-            #print(f"Select {individual["cromosoms"]} as first parent")
             break
     parent = copy.copy(individual["cromosoms"])
     return parent
@@ -49,16 +51,41 @@ def uniform_crossover(parent_1, parent_2, p = 0.95):
             child[i] = parent_1[i]
         else:
             child[i] = parent_2[i]
-    #print(f"Crossover performed: {child}")
     return child
 
-def mutation(child, p = 0.5):
-    # Apply Mutation
-    num_vehicles = max(child) + 1
-    for i in range(len(child)):
+def order_crossover(parent1, parent2):
+    # Apply order crossover
+    size = len(parent1)
+
+    start, end = sorted(random.sample(range(size), 2))
+    
+    child = [None] * size
+    child[start:end + 1] = parent1[start:end + 1]
+
+    current_index = (end + 1) % size
+    parent2_index = (end + 1) % size
+
+    while None in child:
+        gene = parent2[parent2_index]
+        if gene not in child:
+            child[current_index] = gene
+            current_index = (current_index + 1) % size
+        parent2_index = (parent2_index + 1) % size
+
+    return child
+
+
+def mutation(child, p = 0.2):
+    # Apply Mutation by swapping a node with another random node 
+    n = len(child)
+    for i in range(n):
         if np.random.random() < p:
-            child[i] = random.randint(0,num_vehicles-1) # Node assigned to a tour randomly
-    #print(f"Mutation performed: {child}")
+            node_1 = child[i]
+            rand_index = random.randint(0,n-1)
+            node_2 = child[rand_index]
+            child[i] = node_2
+            child[rand_index] = node_1
+
     return child
 
 def capacity_check(routes, instance):
@@ -126,19 +153,33 @@ def diversity(population):
             div += diff / len(individual["cromosoms"])
         individual["div"] = div / (len(population) - 1)
 
-def genetic_algorithm(initial_population, instance, pop_size, instance_name, max_no_improv = 2000):
+def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
 
     # Initialize the population of individuals
-    pop = [] 
-    n_elite = 1
-    for sol in initial_population:
-        ind = encoding(sol, instance)
-        pop.append(ind)
+    pop = []
+    for i in range(pop_size):
+        individual = {
+        "cromosoms": np.random.permutation(list(range(1, instance["dimension"]))).tolist(),
+        "Z": 0,
+        "f": 0,
+        "div": 0,
+        "p": 0,
+        "range": [0, 1],
+        "feasible": True}
+        sol = split(individual["cromosoms"], instance["demand"], instance["capacity"])
+        #sol = hybrid_ls(instance, sol, 50) # Educate initial random population with hybrid ls
+        #individual["cromosoms"] = [node for route in sol for node in route]
+        individual["Z"] = compute_total_cost(sol, instance["edge_weight"])
+        individual["feasible"] = capacity_check(sol, instance)
+        pop.append(individual)
+    
+    n_elite = 4
     fitness_quality(pop)
     diversity(pop)
     calculate_combined_fitness(pop, n_elite)
     calculate_probabilities(pop)
     print(pop)
+
     # Parameters
     p_rek = 0.7
     p_mut = 0.3
@@ -152,7 +193,8 @@ def genetic_algorithm(initial_population, instance, pop_size, instance_name, max
     while no_improv < max_no_improv: 
         new_best_sol_found = False
         fitness_quality(pop)
-        diversity(pop)
+        if it%5 == 0:
+            diversity(pop)
         calculate_combined_fitness(pop, n_elite)
         calculate_probabilities(pop)
         #print(f"\nIteration {it}")
@@ -161,21 +203,25 @@ def genetic_algorithm(initial_population, instance, pop_size, instance_name, max
             parent_1 = parent_selection(pop)
             parent_2 = parent_selection(pop)
             # Reprodcution
-            if np.random.random() < 1:
-                child = uniform_crossover(parent_1, parent_2)
+            if np.random.random() < p_rek:
+                child = order_crossover(parent_1, parent_2)
             else:
                 child = parent_1
             # Mutation        
             if np.random.random() < p_mut:
                 mutation(child)
+
+            # Check if the child is a clone ()
             if is_duplicate(child, pop):
                 continue
-            child_decoded = decoding(child)
-            # Solve TSP for each route
+
+            routes = split(child, instance["demand"], instance["capacity"])
+
+            # Educate the child with nearest neighbor
             new_routes = [] 
             total_length = 0
-            for route in child_decoded:
-                sequenced_route, route_length = tsp_solver_ls(route, instance["edge_weight"])
+            for route in routes:
+                sequenced_route, route_length = tsp_solver_nn(route, instance["edge_weight"])
                 new_routes.append(sequenced_route)  
                 total_length += route_length 
             
@@ -190,13 +236,19 @@ def genetic_algorithm(initial_population, instance, pop_size, instance_name, max
                     #print(f"In Iteration {it}: Improved to cost {best_cost:.2f}")
             else:
                 total_length = 10*total_length # Penalty approach for infeasible solutions
+
             # Update population
-            
-            pop.append({"cromosoms":child, "Z": total_length, "f":0, "div": 0, "fitness_combined" : 0, "p":0, "range":[0,1], "feasible": feasibility})
+            pop.append({"cromosoms": [node for route in new_routes for node in route], # Encoding of the child educated with nearest neighbor
+                        "Z": total_length,
+                        "f":0, 
+                        "div":0, 
+                        "fitness_combined":0, 
+                        "p":0, 
+                        "range":[0,1], 
+                        "feasible": feasibility})
 
         # Replacement
         pop = sorted(pop, key=lambda ind: ind["Z"])[:pop_size+gen_size]
-        #print(f"In iteration {it}, population = {pop}")
         
         # Improvement Management
         if new_best_sol_found is True:
@@ -204,16 +256,25 @@ def genetic_algorithm(initial_population, instance, pop_size, instance_name, max
         else:
             no_improv += 1
 
-        if no_improv > 250:
+        if no_improv > 250 and no_improv%25 == 0:
             num_replace = int(pop_size * 0.2)
             new_individuals = []
             for _ in range(num_replace):
-                sol, inst = generate_random_solution(instance_name)
-                ind = encoding(sol, instance)
+                ind = {
+                    "cromosoms": np.random.permutation(list(range(1, instance["dimension"]))).tolist(),
+                    "Z": 0,
+                    "f": 0,
+                    "div": 0,
+                    "p": 0,
+                    "range": [0, 1],
+                    "feasible": True}
+                sol = split(ind["cromosoms"], instance["demand"], instance["capacity"])
+                ind["Z"] = compute_total_cost(sol, instance["edge_weight"])
+                ind["feasible"] = capacity_check(sol, instance)
                 new_individuals.append(ind)
             pop = pop[:-num_replace] + new_individuals
         print(no_improv)
-        #print(pop)
         it +=1
     
+    best_sol = hybrid_ls(instance, best_sol)
     return best_sol
