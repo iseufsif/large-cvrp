@@ -11,6 +11,15 @@ def compute_total_cost(routes, edge_weight):
         total_cost += edge_weight[prev][0]  # return to depot
     return total_cost
 
+def compute_route_cost(single_route, edge_weight):
+    cost = 0
+    prev = 0  # depot
+    for cust in single_route:
+        cost += edge_weight[prev][cust]
+        prev = cust
+    cost += edge_weight[prev][0]  # return to depot
+    return cost
+
 def write_solution(file_path, routes, cost):
     with open(file_path, "w") as f:
         for i, route in enumerate(routes, 1):

@@ -1,7 +1,4 @@
-# Implement Tabu Search here
 from utils.utils import compute_total_cost
-import numpy as np
-import time
 import random
 import math
 import copy
@@ -34,7 +31,7 @@ def tabu_search(instance, routes, it = 100):
             route_2_idx = random.randint(0,len(current_sol)-1)
             # Check if the selected move is in the tabu list
             if [route_1_idx, route_2_idx] not in tabu_list and [route_2_idx, route_1_idx] not in tabu_list:
-                neighbor = exchange_move(current_sol, route_1_idx, route_2_idx, instance)
+                neighbor, delta = exchange_move(current_sol, route_1_idx, route_2_idx, instance)
                 neighbor_length = compute_total_cost(neighbor, instance["edge_weight"])
 
                 # Check if the new neighbor is a new best solution

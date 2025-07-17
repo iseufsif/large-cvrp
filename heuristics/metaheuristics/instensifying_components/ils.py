@@ -17,10 +17,16 @@ def iterated_local_search(instance, initial_solution, ls=hybrid_ls, it=100, dest
     best = current
     best_cost = current_cost
 
+    # this helps to start ls with fewer iterations in early stages of ILS, where gains are found quickly
+    base_ils_it = int(it / 4)
+    max_ils_it = it
+
     for _ in range(it):
         perturbed = perturb(instance, current, destroy_factor)
-        improved = ls(instance, perturbed)
+        adaptive_it = int(base_ils_it + (max_ils_it - base_ils_it) * (_ / it))
+        improved = ls(instance, perturbed, it=adaptive_it)
         improved_cost = compute_total_cost(improved, instance["edge_weight"])
+
 
         if improved_cost < current_cost:
             current = improved

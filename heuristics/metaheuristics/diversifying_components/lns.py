@@ -22,9 +22,6 @@ def fast_lns(instance, routes, max_iter=250, destroy_frac=0.2):
             best_cost = cost
             current_solution = repaired
 
-        # if it % 25 == 0:
-        #     print(f"Iter {it}: cost = {cost}, best = {best_cost}")
-
     return best_solution
 
 def smart_lns(instance, routes, max_iter=250, destroy_frac=0.2):
@@ -45,8 +42,5 @@ def smart_lns(instance, routes, max_iter=250, destroy_frac=0.2):
             best_solution = repaired
             best_cost = cost
             current_solution = repaired
-
-        # if it % 25 == 0:
-        #     print(f"Iter {it}: cost = {cost}, best = {best_cost}")
 
     return best_solution

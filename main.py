@@ -19,7 +19,7 @@ def main():
     history = []
 
     random.seed(42)
-    # Examplary Instance
+    # Example Instance
     instance_name = "X-n101-k25.vrp"
     bks = get_bks(instance_name)
     
@@ -101,12 +101,11 @@ def main():
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Smart LNS + ILS", smart_lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
 
-    # GA
+    # HGS
     start = time.time()
-    r, instance = generate_random_solution(instance_name)
-    routes_ga = genetic_algorithm(instance, pop_size = 40)
+    routes_ga = HGS(instance, pop_size = 40)
     elapsed = round((time.time() - start) / 60, 4)
-    log_results("Genetic Algorithm", routes_ga, instance, history, runtime=elapsed, bks=bks)
+    log_results("Hybrid Genetic Search", routes_ga, instance, history, runtime=elapsed, bks=bks)
 
     total_runtime = round((time.time() - total_start) / 60, 4)
 
