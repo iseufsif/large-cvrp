@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 def compute_total_cost(routes, edge_weight):
     total_cost = 0
@@ -41,3 +42,13 @@ def get_bks(instance_name):
             if line.startswith("Cost"):
                 return float(line.split()[1])
     raise ValueError(f"No cost line found in {sol_file}")
+
+def convert_ndarrays(obj):
+    if isinstance(obj, dict):
+        return {k: convert_ndarrays(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_ndarrays(elem) for elem in obj]
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    else:
+        return obj

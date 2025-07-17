@@ -1,0 +1,246 @@
+[
+    {
+        "instance_name": "A-n32-k5.vrp",
+        "dimension": 32,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 6.4,
+        "heuristics": {
+            "Random Solution": {
+                "avg_cost": 2193.8694,
+                "std_cost": 125.6694,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 179.83,
+                "std_gap": 16.03
+            },
+            "Randomized Savings Solution": {
+                "avg_cost": 2457.5668,
+                "std_cost": 48.1655,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 213.465,
+                "std_gap": 6.145
+            },
+            "Local Search with Swaps": {
+                "avg_cost": 2070.5667,
+                "std_cost": 3.0596,
+                "avg_time": 0.0004,
+                "std_time": 0.0,
+                "avg_gap": 164.1,
+                "std_gap": 0.39
+            },
+            "Local Search with Two-Opt": {
+                "avg_cost": 2505.7322,
+                "std_cost": 0.0,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 219.61,
+                "std_gap": 0.0
+            },
+            "Local Search Pipeline": {
+                "avg_cost": 2139.7284,
+                "std_cost": 58.1564,
+                "avg_time": 0.0004,
+                "std_time": 0.0001,
+                "avg_gap": 172.925,
+                "std_gap": 7.415
+            },
+            "Iterative Local Search": {
+                "avg_cost": 1562.5411,
+                "std_cost": 79.0025,
+                "avg_time": 0.0331,
+                "std_time": 0.005,
+                "avg_gap": 99.305,
+                "std_gap": 10.075
+            },
+            "Simulated Annealing": {
+                "avg_cost": 2505.7322,
+                "std_cost": 0.0,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 219.61,
+                "std_gap": 0.0
+            },
+            "LS + Simulated Annealing": {
+                "avg_cost": 2197.8848,
+                "std_cost": 0.0,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 180.34,
+                "std_gap": 0.0
+            },
+            "Tabu Search": {
+                "avg_cost": 2119.8328,
+                "std_cost": 4.7531,
+                "avg_time": 0.0011,
+                "std_time": 0.0001,
+                "avg_gap": 170.385,
+                "std_gap": 0.605
+            },
+            "Fast LNS": {
+                "avg_cost": 1120.2268,
+                "std_cost": 71.1837,
+                "avg_time": 0.0026,
+                "std_time": 0.0001,
+                "avg_gap": 42.89,
+                "std_gap": 9.08
+            },
+            "Smart LNS": {
+                "avg_cost": 2505.7322,
+                "std_cost": 0.0,
+                "avg_time": 0.0122,
+                "std_time": 0.0001,
+                "avg_gap": 219.61,
+                "std_gap": 0.0
+            },
+            "Fast LNS + ILS Hybrid": {
+                "avg_cost": 1105.6653,
+                "std_cost": 33.6997,
+                "avg_time": 0.0684,
+                "std_time": 0.0097,
+                "avg_gap": 41.03,
+                "std_gap": 4.3
+            },
+            "Smart LNS + ILS Hybrid": {
+                "avg_cost": 1294.3416,
+                "std_cost": 87.0333,
+                "avg_time": 0.0748,
+                "std_time": 0.0014,
+                "avg_gap": 65.095,
+                "std_gap": 11.105
+            },
+            "Genetic Algorithm": {
+                "avg_cost": 866.73,
+                "std_cost": 47.0693,
+                "avg_time": 0.2901,
+                "std_time": 0.0379,
+                "avg_gap": 10.555,
+                "std_gap": 6.005
+            }
+        }
+    },
+    {
+        "instance_name": "A-n33-k5.vrp",
+        "dimension": 33,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 6.6,
+        "heuristics": {
+            "Random Solution": {
+                "avg_cost": 1725.3683,
+                "std_cost": 61.9455,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 161.025,
+                "std_gap": 9.375
+            },
+            "Randomized Savings Solution": {
+                "avg_cost": 1836.6984,
+                "std_cost": 5.8076,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 177.87,
+                "std_gap": 0.88
+            },
+            "Local Search with Swaps": {
+                "avg_cost": 1520.348,
+                "std_cost": 18.1802,
+                "avg_time": 0.0002,
+                "std_time": 0.0,
+                "avg_gap": 130.01,
+                "std_gap": 2.75
+            },
+            "Local Search with Two-Opt": {
+                "avg_cost": 1830.8908,
+                "std_cost": 0.0,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 176.99,
+                "std_gap": 0.0
+            },
+            "Local Search Pipeline": {
+                "avg_cost": 1506.7842,
+                "std_cost": 9.2436,
+                "avg_time": 0.0005,
+                "std_time": 0.0001,
+                "avg_gap": 127.955,
+                "std_gap": 1.395
+            },
+            "Iterative Local Search": {
+                "avg_cost": 1009.2899,
+                "std_cost": 6.382,
+                "avg_time": 0.032,
+                "std_time": 0.0,
+                "avg_gap": 52.695,
+                "std_gap": 0.965
+            },
+            "Simulated Annealing": {
+                "avg_cost": 1830.8908,
+                "std_cost": 0.0,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 176.99,
+                "std_gap": 0.0
+            },
+            "LS + Simulated Annealing": {
+                "avg_cost": 1516.0278,
+                "std_cost": 0.0,
+                "avg_time": 0.0,
+                "std_time": 0.0,
+                "avg_gap": 129.35,
+                "std_gap": 0.0
+            },
+            "Tabu Search": {
+                "avg_cost": 1528.3886,
+                "std_cost": 1.9085,
+                "avg_time": 0.0011,
+                "std_time": 0.0,
+                "avg_gap": 131.22,
+                "std_gap": 0.29
+            },
+            "Fast LNS": {
+                "avg_cost": 837.8645,
+                "std_cost": 67.5158,
+                "avg_time": 0.0027,
+                "std_time": 0.0,
+                "avg_gap": 26.755,
+                "std_gap": 10.215
+            },
+            "Smart LNS": {
+                "avg_cost": 1830.8908,
+                "std_cost": 0.0,
+                "avg_time": 0.0127,
+                "std_time": 0.0,
+                "avg_gap": 176.99,
+                "std_gap": 0.0
+            },
+            "Fast LNS + ILS Hybrid": {
+                "avg_cost": 774.2491,
+                "std_cost": 5.2049,
+                "avg_time": 0.0503,
+                "std_time": 0.001,
+                "avg_gap": 17.135,
+                "std_gap": 0.785
+            },
+            "Smart LNS + ILS Hybrid": {
+                "avg_cost": 1142.8745,
+                "std_cost": 58.8234,
+                "avg_time": 0.0601,
+                "std_time": 0.0031,
+                "avg_gap": 72.9,
+                "std_gap": 8.9
+            },
+            "Genetic Algorithm": {
+                "avg_cost": 695.8155,
+                "std_cost": 5.9587,
+                "avg_time": 0.3114,
+                "std_time": 0.0629,
+                "avg_gap": 5.27,
+                "std_gap": 0.9
+            }
+        }
+    }
+]
