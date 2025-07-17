@@ -1,7 +1,11 @@
+import copy
 from utils.utils import is_feasible, compute_total_cost
 
 # greedy repair is the cheapest feasible insertion
 def greedy_repair(instance, solution, removed_customers):
+    solution = copy.deepcopy(solution)
+    inserted_customers = set()
+
     for cust in removed_customers:
         best_cost = float('inf')
         best_position = None
@@ -11,7 +15,6 @@ def greedy_repair(instance, solution, removed_customers):
             for i in range(len(route) + 1):
                 new_route = route[:i] + [cust] + route[i:]
                 if is_feasible(new_route, instance):
-                    # Compute cost with depot (0) at start and end
                     cost = compute_total_cost([new_route], instance["edge_weight"])
                     if cost < best_cost:
                         best_cost = cost
@@ -20,15 +23,34 @@ def greedy_repair(instance, solution, removed_customers):
 
         if best_position is not None:
             solution[best_route_idx].insert(best_position, cust)
+            inserted_customers.add(cust)
         else:
-            # Start new route if all others violate capacity
+            # print(f"⚠️ [greedy_repair] Forcing fallback route for customer {cust}")
             solution.append([cust])
+            inserted_customers.add(cust)
+
+    # Final integrity check with detailed output
+    all_customers = set(range(1, instance["dimension"]))
+    visited = set(c for route in solution for c in route)
+
+    missing = all_customers - visited
+    extra   = visited - all_customers
+
+    if missing or extra:
+        print("📋 Final inserted_customers:", sorted(inserted_customers))
+        print("📋 Final visited customers:", sorted(visited))
+        print("📋 Expected customers     :", sorted(all_customers))
+        if missing:
+            print("❌ Still missing customers:", missing)
+        if extra:
+            print("❌ Unexpected extra customers:", extra)
+        raise RuntimeError("❌ [greedy_repair] Final customer mismatch after repair")
 
     return solution
 
-
 def regret_repair(instance, solution, removed_customers, k=3):
     while removed_customers:
+        solution = copy.deepcopy(solution)
         regret_list = []
 
         for cust in removed_customers:

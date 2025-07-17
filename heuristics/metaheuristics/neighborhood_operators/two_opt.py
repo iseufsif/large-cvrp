@@ -20,7 +20,7 @@ def two_opt_move(routes, route_idx, edge_weight):
     new_cost = compute_route_cost(new_route, edge_weight)
     delta = new_cost - old_cost
 
-    new_routes = routes.copy()
+    new_routes = copy.deepcopy(routes)
     new_routes[route_idx] = new_route
 
     return new_routes, delta

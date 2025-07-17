@@ -2,22 +2,28 @@ import random
 from utils.utils import compute_total_cost
 
 def random_removal(solution, num_remove):
-    # save all customers
-    flat_customers = [cust for route in solution for cust in route]
+    # Create a set of all unique visited customers
+    visited_customers = sorted(set(cust for route in solution for cust in route))
 
-    # randomly select customers to remove -- num_remove = number of customers you want to remove
-    to_remove = set(random.sample(flat_customers, num_remove))
-    
+    # Safety check
+    assert num_remove <= len(visited_customers), \
+        f"Cannot remove {num_remove} from only {len(visited_customers)} customers"
+
+    to_remove = set(random.sample(visited_customers, num_remove))
+
     partial_solution = []
     removed_customers = []
 
     for route in solution:
-        # rebuild partial routes
         new_route = [cust for cust in route if cust not in to_remove]
         removed = [cust for cust in route if cust in to_remove]
         if new_route:
             partial_solution.append(new_route)
         removed_customers.extend(removed)
+
+    # Final integrity check
+    assert set(removed_customers) == to_remove, \
+        f"Mismatch: intended to remove {to_remove}, but removed {set(removed_customers)}"
 
     return partial_solution, removed_customers
 

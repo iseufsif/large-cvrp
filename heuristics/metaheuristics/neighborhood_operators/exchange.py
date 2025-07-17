@@ -1,7 +1,11 @@
 import random
+import copy
 from utils.utils import compute_route_cost
 
-def exchange_move(routes, route_1_idx, route_2_idx, instance):    
+def exchange_move(routes, route_1_idx, route_2_idx, instance):
+    if route_1_idx == route_2_idx:
+        return routes, 0  # skip intra-route swaps
+
     capacity = instance["capacity"]
     demands = instance["demand"]
     edge_weight = instance["edge_weight"]
@@ -25,8 +29,8 @@ def exchange_move(routes, route_1_idx, route_2_idx, instance):
         return routes, 0  # infeasible
 
     # Apply swap
-    new_route1 = route1.copy()
-    new_route2 = route2.copy()
+    new_route1 = copy.deepcopy(route1)
+    new_route2 = copy.deepcopy(route2)
     new_route1[index_1] = node2
     new_route2[index_2] = node1
 
@@ -39,7 +43,7 @@ def exchange_move(routes, route_1_idx, route_2_idx, instance):
     delta = (new_cost_1 + new_cost_2) - (old_cost_1 + old_cost_2)
 
     # Build new routes list
-    new_routes = routes.copy()
+    new_routes = copy.deepcopy(routes)
     new_routes[route_1_idx] = new_route1
     new_routes[route_2_idx] = new_route2
 
