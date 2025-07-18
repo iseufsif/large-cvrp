@@ -8,24 +8,19 @@ from heuristics.construction.random import generate_random_solution
 from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
 
 def split(permutation, demand, capacity):
-    n = len(permutation)
     routes = []
-    not_assigned = copy.copy(permutation)
     route = []
     load = 0
-    i=0
-    while len(not_assigned) != 0:
-        if load + demand[permutation[i]] <= capacity:
-            route.append(permutation[i]) 
-            load += demand[permutation[i]]
-            not_assigned.remove(permutation[i])
+    for node in permutation:
+        if load + demand[node] <= capacity:
+            route.append(node)
+            load += demand[node]
         else:
             routes.append(route)
-            route = [permutation[i]]
-            load = demand[permutation[i]]
-            not_assigned.remove(permutation[i])
-        i+=1
-    routes.append(route)
+            route = [node]
+            load = demand[node]
+    if route:
+        routes.append(route)
     return routes
     
 
@@ -128,7 +123,7 @@ def calculate_combined_fitness(population, n_elite):
     
 def calculate_probabilities(population):
     # Rank based selection
-    E_max = 1.2
+    E_max = 1.5 #tuned
     E_min = 2 - E_max
     pop_size = len(population)
     pop_sorted = sorted(population, key=lambda x: x["fitness_combined"])
@@ -178,12 +173,13 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
     diversity(pop)
     calculate_combined_fitness(pop, n_elite)
     calculate_probabilities(pop)
-    print(pop)
 
     # Parameters
-    p_rek = 0.7
-    p_mut = 0.3
-    gen_size = 25
+    p_rek = 0.7 # tuned
+    p_mut = 0.2 # tuned
+    gen_size = 25 # from literature
+    penalty = 10
+    ref_ratio = 0.2 # from literature#
 
     no_improv = 0
     it = 1
@@ -193,7 +189,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
     while no_improv < max_no_improv: 
         new_best_sol_found = False
         fitness_quality(pop)
-        if it%5 == 0:
+        if it%10 == 0: # tuned
             diversity(pop)
         calculate_combined_fitness(pop, n_elite)
         calculate_probabilities(pop)
@@ -212,7 +208,8 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
                 mutation(child)
 
             # Check if the child is a clone ()
-            if is_duplicate(child, pop):
+            seen = set(tuple(ind["cromosoms"]) for ind in pop)
+            if tuple(child) in seen:
                 continue
 
             routes = split(child, instance["demand"], instance["capacity"])
@@ -235,8 +232,8 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
                     new_best_sol_found = True
                     #print(f"In Iteration {it}: Improved to cost {best_cost:.2f}")
             else:
-                total_length = 10*total_length # Penalty approach for infeasible solutions
-
+                total_length = penalty*total_length
+            
             # Update population
             pop.append({"cromosoms": [node for route in new_routes for node in route], # Encoding of the child educated with nearest neighbor
                         "Z": total_length,
@@ -249,6 +246,27 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
 
         # Replacement
         pop = sorted(pop, key=lambda ind: ind["Z"])[:pop_size+gen_size]
+
+        # Population Management
+        num_infeasible = 0
+        num_feasible = 0
+        for sol in pop:
+            if sol["feasible"] is True:
+                num_feasible += 1
+            else:
+                num_infeasible += 1 
+
+        if num_feasible == 0:
+            penalty = penalty*2
+            continue
+
+        ratio = num_infeasible/num_feasible
+
+        if ratio > ref_ratio: # We want to have 20% of infeasible solutions in our population
+            penalty = penalty*1.1
+        else:
+            penalty = penalty*0.9
+        
         
         # Improvement Management
         if new_best_sol_found is True:
@@ -256,7 +274,8 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
         else:
             no_improv += 1
 
-        if no_improv > 250 and no_improv%25 == 0:
+        # After 250 iteration with no improvement, we replace some individuals with random solutions
+        if no_improv > 250 and no_improv%35 == 0: # Tuned
             num_replace = int(pop_size * 0.2)
             new_individuals = []
             for _ in range(num_replace):
@@ -273,8 +292,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
                 ind["feasible"] = capacity_check(sol, instance)
                 new_individuals.append(ind)
             pop = pop[:-num_replace] + new_individuals
-        print(no_improv)
+        #print(no_improv)
         it +=1
-    
-    best_sol = hybrid_ls(instance, best_sol)
+
     return best_sol

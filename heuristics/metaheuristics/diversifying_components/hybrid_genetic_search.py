@@ -1,4 +1,4 @@
-from heuristics.metaheuristics.diversifying_components.genetic_algorithm import split,fitness_quality, calculate_probabilities, parent_selection, order_crossover,capacity_check, calculate_combined_fitness, diversity
+from heuristics.metaheuristics.diversifying_components.genetic_algorithm import is_duplicate,split,fitness_quality, calculate_probabilities, parent_selection, order_crossover,capacity_check, calculate_combined_fitness, diversity
 from utils.tsp_solvers_for_GA import tsp_solver_nn, tsp_solver_ls
 from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
 import numpy as np
@@ -55,6 +55,8 @@ def HGS(instance, pop_size, max_no_improv = 100):
     
             # Reprodcution
             child = order_crossover(parent_1, parent_2)
+            if is_duplicate(child, pop):
+                continue
             routes = split(child, instance["demand"], instance["capacity"])
             # Educate child using Nearest Neighbor and Local Search
             new_routes = [] 
