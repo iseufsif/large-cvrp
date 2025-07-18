@@ -25,7 +25,7 @@ import pandas as pd
 
 # ===== SETUP =====
 def main():
-    instance_name = "A-n33-k5.vrp"
+    instance_name = "X-n101-k25.vrp"
     instance = vrplib.read_instance("instances/" + instance_name)
 
     bks = get_bks(instance_name)
@@ -58,12 +58,9 @@ def main():
         runtimes.append(elapsed)
 
     results["heuristics"]["Random Solution"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
 
     # Generate Randomized Savings Solution
     costs, gaps, runtimes = [], [], []
@@ -78,14 +75,11 @@ def main():
         runtimes.append(elapsed)
 
     results["heuristics"]["Randomized Savings Solution"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
     
-    # Standalone Local Search - Swap-based
+    """# Standalone Local Search - Swap-based
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
         start = time.time()
@@ -98,12 +92,9 @@ def main():
         runtimes.append(elapsed)
 
     results["heuristics"]["Local Search with Swaps"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
 
     # Standalone Local Search - 2-Opt
     costs, gaps, runtimes = [], [], []
@@ -118,12 +109,9 @@ def main():
         runtimes.append(elapsed)
 
     results["heuristics"]["Local Search with Two-Opt"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
 
     # Local Search Pipeline - Swap -> 2-Opt
     costs, gaps, runtimes = [], [], []
@@ -138,13 +126,10 @@ def main():
         runtimes.append(elapsed)
 
     results["heuristics"]["Local Search Pipeline"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
-
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
+"""
     # Iterated Local Search - Using Hybrid LS by default
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
@@ -159,12 +144,9 @@ def main():
         runtimes.append(elapsed)
 
     results["heuristics"]["Iterative Local Search"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
 
     # Standalone Simulated Annealing
     costs, gaps, runtimes = [], [], []
@@ -179,14 +161,11 @@ def main():
         runtimes.append(elapsed)
 
     results["heuristics"]["Simulated Annealing"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
 
-    # LS + Simulated Annealing
+    """# LS + Simulated Annealing
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
         start = time.time()
@@ -196,138 +175,147 @@ def main():
 
         costs.append(cost_ls_sa)
         gaps.append(round((cost_ls_sa-bks)/bks*100, 2))
-        runtimes.append(elapsed)
+        runtimes.append(elapsed)"""
 
     results["heuristics"]["LS + Simulated Annealing"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs,
+        "times": runtimes,
+        "gaps": gaps}
 
     # Tabu Search
-    costs, gaps, runtimes = [], [], []
+    costs_tabu, gaps_tabu, runtimes_tabu = [], [], []
+    costs_tabu_hls, gaps_tabu_hls, runtimes_tabu_hls = [],[],[]
     for iter in range(n_iter):
         start = time.time()
         tabu_routes = tabu_search(instance, sav_routes, 50)
         cost_tabu = compute_total_cost(tabu_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
+        elapsed1 = round((time.time() - start) / 60, 4)
 
-        costs.append(cost_tabu)
-        gaps.append(round((cost_tabu-bks)/bks*100, 2))
-        runtimes.append(elapsed)
+        costs_tabu.append(cost_tabu)
+        gaps_tabu.append(round((cost_tabu-bks)/bks*100, 2))
+        runtimes_tabu.append(elapsed1)
+
+    # Tabu Search + Hybrid LS
+        start = time.time()
+        tabu_hls_routes = hybrid_ls(instance, tabu_routes, 100)
+        cost_tabu_hls = compute_total_cost(tabu_hls_routes, instance["edge_weight"])
+        elapsed2 = round((time.time() - start) / 60, 4)
+
+        costs_tabu_hls.append(cost_tabu_hls)
+        gaps_tabu_hls.append(round((cost_tabu_hls-bks)/bks*100, 2))
+        runtimes_tabu_hls.append(elapsed1 + elapsed2)
 
     results["heuristics"]["Tabu Search"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
-
+        "costs": costs_tabu,
+        "times": runtimes_tabu,
+        "gaps": gaps_tabu}
+    
+    results["heuristics"]["Tabu Search + Hybrid Ls"] = {
+        "costs": costs_tabu_hls,
+        "times": runtimes_tabu_hls,
+        "gaps": gaps_tabu_hls}
 
     # Fast LNS
-    costs, gaps, runtimes = [], [], []
+    costs_lns, gaps_lns, runtimes_lns = [], [], []
+    costs_lns_ils, gaps_lns_ils, runtimes_lns_ils = [], [], []
     for iter in range(n_iter):
         start = time.time()
         fast_lns_routes = fast_lns(instance, sav_routes, 100)
         cost_fast_lns = compute_total_cost(fast_lns_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
+        elapsed1 = round((time.time() - start) / 60, 4)
 
-        costs.append(cost_fast_lns)
-        gaps.append(round((cost_fast_lns-bks)/bks*100, 2))
-        runtimes.append(elapsed)
+        costs_lns.append(cost_fast_lns)
+        gaps_lns.append(round((cost_fast_lns-bks)/bks*100, 2))
+        runtimes_lns.append(elapsed1)
+
+    # Fast LNS + ILS
+        start = time.time()
+        fast_lns_ils_routes = iterated_local_search(instance, fast_lns_routes)
+        cost_fast_lns_ils = compute_total_cost(fast_lns_ils_routes, instance["edge_weight"])
+        elapsed2 = round((time.time() - start) / 60, 4)
+
+        costs_lns_ils.append(cost_fast_lns_ils)
+        gaps_lns_ils.append(round((cost_fast_lns_ils-bks)/bks*100, 2))
+        runtimes_lns_ils.append(elapsed1 + elapsed2)
 
     results["heuristics"]["Fast LNS"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs_lns,
+        "times": runtimes_lns,
+        "gaps": gaps_lns}
+    
+    results["heuristics"]["Fast LNS + ILS Hybrid"] = {
+        "costs": costs_lns_ils,
+        "times": runtimes_lns_ils,
+        "gaps": gaps_lns_ils}
 
     # Smart LNS
-    costs, gaps, runtimes = [], [], []
+    costs_lns, gaps_lns, runtimes_lns = [], [], []
+    costs_lns_ils, gaps_lns_ils, runtimes_lns_ils = [], [], []
     for iter in range(n_iter):
         start = time.time()
         smart_lns_routes = smart_lns(instance, sav_routes, 100)
         cost_smart_lns = compute_total_cost(smart_lns_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
+        elapsed1 = round((time.time() - start) / 60, 4)
 
-        costs.append(cost_smart_lns)
-        gaps.append(round((cost_smart_lns-bks)/bks*100, 2))
-        runtimes.append(elapsed)
+        costs_lns.append(cost_smart_lns)
+        gaps_lns.append(round((cost_smart_lns-bks)/bks*100, 2))
+        runtimes_lns.append(elapsed1)
 
-    results["heuristics"]["Smart LNS"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
-
-    # Fast LNS + ILS Hybrid
-    costs, gaps, runtimes = [], [], []
-    for iter in range(n_iter):
-        start = time.time()
-        fast_lns_ils_routes = iterated_local_search(instance, fast_lns_routes)
-        cost_fast_lns_ils = compute_total_cost(fast_lns_ils_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
-
-        costs.append(cost_fast_lns_ils)
-        gaps.append(round((cost_fast_lns_ils-bks)/bks*100, 2))
-        runtimes.append(elapsed)
-
-    results["heuristics"]["Fast LNS + ILS Hybrid"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
-
-    # Smart LNS + ILS Hybrid
-    costs, gaps, runtimes = [], [], []
-    for iter in range(n_iter):
+    # Smart LNS + ILS
         start = time.time()
         smart_lns_ils_routes = iterated_local_search(instance, smart_lns_routes)
         cost_smart_lns_ils = compute_total_cost(smart_lns_ils_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
+        elapsed2 = round((time.time() - start) / 60, 4)
 
-        costs.append(cost_smart_lns_ils)
-        gaps.append(round((cost_smart_lns_ils-bks)/bks*100, 2))
-        runtimes.append(elapsed)
+        costs_lns_ils.append(cost_smart_lns_ils)
+        gaps_lns_ils.append(round((cost_smart_lns_ils-bks)/bks*100, 2))
+        runtimes_lns_ils.append(elapsed1+elapsed2)
 
+    results["heuristics"]["Smart LNS"] = {
+        "costs": costs_lns,
+        "times": runtimes_lns,
+        "gaps": gaps_lns}
+    
     results["heuristics"]["Smart LNS + ILS Hybrid"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs_lns_ils,
+        "times": runtimes_lns_ils,
+        "gaps": gaps_lns_ils}
 
     # Genetic Algorithm
-    costs, gaps, runtimes = [], [], []
+    costs_ga, gaps_ga, runtimes_ga = [], [], []
+    costs_ga_hls, gaps_ga_hls, runtimes_ga_hls = [],[],[]
     for iter in range(n_iter):
         start = time.time()
         routes_ga = genetic_algorithm(instance, pop_size = 40)
         cost_ga = compute_total_cost(routes_ga, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
+        elapsed1 = round((time.time() - start) / 60, 4)
 
-        costs.append(cost_ga)
-        gaps.append(round((cost_ga-bks)/bks*100, 2))
-        runtimes.append(elapsed)
+        costs_ga.append(cost_ga)
+        gaps_ga.append(round((cost_ga-bks)/bks*100, 2))
+        runtimes_ga.append(elapsed)
+
+    # GA + Hybrid LS
+        start = time.time()
+        routes_ga_hls = hybrid_ls(instance, routes_ga, 100)
+        cost_ga_hls = compute_total_cost(routes_ga_hls, instance["edge_weight"])
+        elapsed2 = round((time.time() - start) / 60, 4)
+
+        costs_ga_hls.append(cost_ga_hls)
+        gaps_ga_hls.append(round((cost_ga_hls-bks)/bks*100, 2))
+        runtimes_ga_hls.append(elapsed1+elapsed2)
 
     results["heuristics"]["Genetic Algorithm"] = {
-        "avg_cost": round(np.mean(costs), 4),
-        "std_cost": round(np.std(costs), 4),
-        "avg_time": round(np.mean(runtimes), 4),
-        "std_time": round(np.std(runtimes), 4),
-        "avg_gap": round(np.mean(gaps), 4),
-        "std_gap": round(np.std(gaps),4)}
+        "costs": costs_ga,
+        "times": runtimes_ga,
+        "gaps": gaps_ga}
+    
+    results["heuristics"]["GA + Hybrid LS"] = {
+        "costs": costs_ga_hls,
+        "times": runtimes_ga_hls,
+        "gaps": gaps_ga_hls}
 
     total_runtime = (time.time() - start_all) / 60  # minuti
+
 
     # ===== FINAL PRINTING =====
     print("\n==================== Heuristic Comparison ====================")
@@ -338,9 +326,9 @@ def main():
     for label in results["heuristics"].keys():
         stats = results["heuristics"][label]
         print(f"{label:<25} | "
-            f"{stats['avg_cost']:<10.2f} | "
-            f"{stats['avg_gap']:<8.2f}% | "
-            f"{stats['avg_time']:<10.4f}")
+            f"{np.mean(stats['costs']):<10.2f} | "
+            f"{np.mean(stats['gaps']):<8.2f}% | "
+            f"{np.mean(stats['times']):<10.4f}")
 
     print(f"\nTotal Runtime in Minutes: {total_runtime:.2f}")
 

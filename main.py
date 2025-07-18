@@ -102,11 +102,11 @@ def main():
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Smart LNS + ILS", smart_lns_ils_routes, instance, history, runtime=elapsed, bks=bks)
 
-    # HGS
+    # Genetic Algorithm
     start = time.time()
     routes_ga = HGS(instance, pop_size = 40)
     elapsed = round((time.time() - start) / 60, 4)
-    log_results("Hybrid Genetic Search", routes_ga, instance, history, runtime=elapsed, bks=bks)
+    log_results("Genetic Algorithm", routes_ga, instance, history, runtime=elapsed, bks=bks)
 
     total_runtime = round((time.time() - total_start) / 60, 4)
 
