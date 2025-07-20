@@ -2,7 +2,7 @@ import random
 import time
 
 from heuristics.construction.random import generate_random_solution
-from heuristics.construction.savings import randomized_savings
+from heuristics.construction.random_savings import randomized_savings
 from utils.utils import compute_total_cost, write_solution, print_solution, log_results, get_bks, convert_ndarrays
 from utils.plot import plot_routes
 from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps, hybrid_ls
@@ -31,12 +31,13 @@ def main():
     bks = get_bks(instance_name)
     name_no_ext = instance_name.lower().replace(".vrp", "")
     k = int(name_no_ext.split("k")[1])
-    avg_route_size = instance["dimension"] / k
+    n = instance["dimension"]
+    avg_route_size = n/k
 
     # ===== EXECUTION =====
     results = {
         "instance_name": instance_name,
-        "dimension": instance["dimension"],
+        "dimension": n,
         "depot": instance["depot"],
         "avg_route_size": avg_route_size,
         "heuristics": {}
@@ -44,7 +45,7 @@ def main():
 
     start_all = time.time()
 
-    n_iter = 2
+    n_iter = 1
     # Generate random initial solution and initialize instance
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
@@ -79,8 +80,8 @@ def main():
         "times": runtimes,
         "gaps": gaps}
     
-    """# Standalone Local Search - Swap-based
-    costs, gaps, runtimes = [], [], []
+    # Standalone Local Search - Swap-based
+    """costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
         start = time.time()
         ls_swap_routes = ls_with_swaps(instance, sav_routes, 100)
@@ -133,9 +134,8 @@ def main():
     # Iterated Local Search - Using Hybrid LS by default
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
-        print(iter)
         start = time.time()
-        ils_routes = iterated_local_search(instance, sav_routes, ls=hybrid_ls, it=50, destroy_factor=0.1)
+        ils_routes = iterated_local_search(instance, sav_routes, ls=hybrid_ls, it=n, destroy_factor=0.1)
         cost_ils = compute_total_cost(ils_routes, instance["edge_weight"])
         elapsed = round((time.time() - start) / 60, 4)
 
@@ -152,7 +152,7 @@ def main():
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
         start = time.time()
-        sa_routes = simulated_annealing(instance, sav_routes)
+        sa_routes = simulated_annealing(instance, random_routes, n)
         cost_sa = compute_total_cost(sa_routes, instance["edge_weight"])
         elapsed = round((time.time() - start) / 60, 4)
 
@@ -175,19 +175,19 @@ def main():
 
         costs.append(cost_ls_sa)
         gaps.append(round((cost_ls_sa-bks)/bks*100, 2))
-        runtimes.append(elapsed)"""
+        runtimes.append(elapsed)
 
     results["heuristics"]["LS + Simulated Annealing"] = {
         "costs": costs,
         "times": runtimes,
         "gaps": gaps}
-
+"""
     # Tabu Search
     costs_tabu, gaps_tabu, runtimes_tabu = [], [], []
     costs_tabu_hls, gaps_tabu_hls, runtimes_tabu_hls = [],[],[]
     for iter in range(n_iter):
         start = time.time()
-        tabu_routes = tabu_search(instance, sav_routes, 50)
+        tabu_routes = tabu_search(instance, sav_routes,n)
         cost_tabu = compute_total_cost(tabu_routes, instance["edge_weight"])
         elapsed1 = round((time.time() - start) / 60, 4)
 
@@ -197,7 +197,7 @@ def main():
 
     # Tabu Search + Hybrid LS
         start = time.time()
-        tabu_hls_routes = hybrid_ls(instance, tabu_routes, 100)
+        tabu_hls_routes = hybrid_ls(instance, tabu_routes, n)
         cost_tabu_hls = compute_total_cost(tabu_hls_routes, instance["edge_weight"])
         elapsed2 = round((time.time() - start) / 60, 4)
 
@@ -220,7 +220,7 @@ def main():
     costs_lns_ils, gaps_lns_ils, runtimes_lns_ils = [], [], []
     for iter in range(n_iter):
         start = time.time()
-        fast_lns_routes = fast_lns(instance, sav_routes, 100)
+        fast_lns_routes = fast_lns(instance, sav_routes, n)
         cost_fast_lns = compute_total_cost(fast_lns_routes, instance["edge_weight"])
         elapsed1 = round((time.time() - start) / 60, 4)
 
@@ -230,7 +230,7 @@ def main():
 
     # Fast LNS + ILS
         start = time.time()
-        fast_lns_ils_routes = iterated_local_search(instance, fast_lns_routes)
+        fast_lns_ils_routes = iterated_local_search(instance, fast_lns_routes, it=n)
         cost_fast_lns_ils = compute_total_cost(fast_lns_ils_routes, instance["edge_weight"])
         elapsed2 = round((time.time() - start) / 60, 4)
 
@@ -253,7 +253,7 @@ def main():
     costs_lns_ils, gaps_lns_ils, runtimes_lns_ils = [], [], []
     for iter in range(n_iter):
         start = time.time()
-        smart_lns_routes = smart_lns(instance, sav_routes, 100)
+        smart_lns_routes = smart_lns(instance, sav_routes, n)
         cost_smart_lns = compute_total_cost(smart_lns_routes, instance["edge_weight"])
         elapsed1 = round((time.time() - start) / 60, 4)
 
@@ -263,7 +263,7 @@ def main():
 
     # Smart LNS + ILS
         start = time.time()
-        smart_lns_ils_routes = iterated_local_search(instance, smart_lns_routes)
+        smart_lns_ils_routes = iterated_local_search(instance, smart_lns_routes, it=n)
         cost_smart_lns_ils = compute_total_cost(smart_lns_ils_routes, instance["edge_weight"])
         elapsed2 = round((time.time() - start) / 60, 4)
 
@@ -286,17 +286,17 @@ def main():
     costs_ga_hls, gaps_ga_hls, runtimes_ga_hls = [],[],[]
     for iter in range(n_iter):
         start = time.time()
-        routes_ga = genetic_algorithm(instance, pop_size = 40)
+        routes_ga = genetic_algorithm(instance, 40, n*10)
         cost_ga = compute_total_cost(routes_ga, instance["edge_weight"])
         elapsed1 = round((time.time() - start) / 60, 4)
 
         costs_ga.append(cost_ga)
         gaps_ga.append(round((cost_ga-bks)/bks*100, 2))
-        runtimes_ga.append(elapsed)
+        runtimes_ga.append(elapsed1)
 
     # GA + Hybrid LS
         start = time.time()
-        routes_ga_hls = hybrid_ls(instance, routes_ga, 100)
+        routes_ga_hls = hybrid_ls(instance, routes_ga, n)
         cost_ga_hls = compute_total_cost(routes_ga_hls, instance["edge_weight"])
         elapsed2 = round((time.time() - start) / 60, 4)
 

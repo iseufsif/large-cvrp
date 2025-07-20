@@ -2,11 +2,13 @@
 from utils.utils import compute_total_cost
 import numpy as np
 import time
+import random
 from heuristics.metaheuristics.neighborhood_operators.two_opt import two_opt_move
+from heuristics.metaheuristics.neighborhood_operators.exchange import exchange_move
 import math
 import copy
 
-def simulated_annealing(instance, routes, it=50, max_no_improvement=200, alpha=0.1, beta=0.9):
+def simulated_annealing(instance, routes, max_no_improvement=100, alpha=0.1, beta=0.9): # parameters tuned
     # Initialize
     current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
@@ -25,10 +27,14 @@ def simulated_annealing(instance, routes, it=50, max_no_improvement=200, alpha=0
     while no_improv < max_no_improvement:
         improv = False
         for r_idx in range(len(current_sol)):
-            if len(current_sol[r_idx]) < 3:
-                continue  # skip short routes
-            for _ in range(it):
-                neighbor = two_opt_move(current_sol, r_idx)
+            """if len(current_sol[r_idx]) < 3:
+                continue  # skip short routes"""
+            n = len(current_sol[r_idx])
+            for _ in range(round(1.5*n)): # Tuned
+                #neighbor, x = two_opt_move(current_sol, r_idx, instance["edge_weight"])
+                r_idx_rand = random.randint(0,len(current_sol)-2)
+                neighbor, x = exchange_move(current_sol, r_idx, r_idx_rand, instance)
+
                 neighbor_length = compute_total_cost(neighbor, instance["edge_weight"])
                 delta = neighbor_length - current_length
                 if delta < 0:

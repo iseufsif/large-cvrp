@@ -5,7 +5,7 @@ import copy
 from heuristics.metaheuristics.neighborhood_operators.exchange import exchange_move
 
 
-def tabu_search(instance, routes, it = 100):
+def tabu_search(instance, routes, max_no_improv = 100):
     current_sol = copy.deepcopy(routes) # A feasible solution to the minimization problem: x
     current_best_sol = copy.deepcopy(routes) # Initial best solution x*
     current_length = compute_total_cost(current_sol, instance["edge_weight"]) # Initial F(x)   
@@ -17,8 +17,8 @@ def tabu_search(instance, routes, it = 100):
     # Parameters:
     max_length_tabu = math.sqrt(n) # tuned
     size_neighborhood = round(0.8*n) # tuned
-
-    for k in range(it):
+    improv = 0 
+    while improv < max_no_improv:
         best_delta = 0
         best_worse_delta = sum(sum(instance["edge_weight"]))
         best_solution = current_best_sol.copy()
@@ -50,6 +50,7 @@ def tabu_search(instance, routes, it = 100):
                     if delta_best < best_delta:
                         best_solution = neighbor.copy()
                         best_delta = delta_best
+                        improv = 0
                         # print(f"In Iteration {k}: Improved to cost {current_best_length + best_delta:.2f}")
         # Update the tabo list:
         if to_be_added != None:         
@@ -62,5 +63,6 @@ def tabu_search(instance, routes, it = 100):
         current_length += best_worse_delta # Update current length F(x) <- F(x')
         current_best_sol = best_solution # In case we found an improvement x* <- x    
         current_best_length += best_delta  # Update F(x*)
+        improv+=1
     
     return current_best_sol

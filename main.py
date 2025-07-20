@@ -3,7 +3,7 @@ import time
 import copy
 
 from heuristics.construction.random import generate_random_solution
-from heuristics.construction.savings import randomized_savings
+from heuristics.construction.random_savings import randomized_savings
 from utils.utils import compute_total_cost, write_solution, print_solution, log_results, get_bks
 from utils.plot import plot_routes
 from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps, hybrid_ls
@@ -37,7 +37,7 @@ def main():
     log_results("Savings Solution", savings_routes, instance, history, runtime=elapsed, bks=bks)
     
     # Standalone Local Search - Swap-based
-    start = time.time()
+    """start = time.time()
     ls_swap_routes = ls_with_swaps(instance, copy.deepcopy(savings_routes), 100)
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Local Search (Swaps)", ls_swap_routes, instance, history, runtime=elapsed, bks=bks)
@@ -70,7 +70,7 @@ def main():
     start = time.time()
     ls_sa_routes = simulated_annealing(instance, ls_pipeline_routes)
     elapsed = round((time.time() - start) / 60, 4)
-    log_results("LS Pipeline + SA", ls_sa_routes, instance, history, runtime=elapsed, bks=bks)
+    log_results("LS Pipeline + SA", ls_sa_routes, instance, history, runtime=elapsed, bks=bks)"""
 
     # Tabu Search
     start = time.time()
@@ -79,7 +79,7 @@ def main():
     log_results("Standalone Tabu Search", tabu_routes, instance, history, runtime=elapsed, bks=bks)
 
     # Fast LNS
-    start = time.time()
+    """start = time.time()
     fast_lns_routes = fast_lns(instance, copy.deepcopy(savings_routes), 100)
     elapsed = round((time.time() - start) / 60, 4)
     log_results("Fast LNS", fast_lns_routes, instance, history, runtime=elapsed, bks=bks)
@@ -104,9 +104,9 @@ def main():
 
     # Genetic Algorithm
     start = time.time()
-    routes_ga = HGS(instance, pop_size = 40)
+    routes_ga = genetic_algorithm(instance, pop_size = 40)
     elapsed = round((time.time() - start) / 60, 4)
-    log_results("Genetic Algorithm", routes_ga, instance, history, runtime=elapsed, bks=bks)
+    log_results("Genetic Algorithm", routes_ga, instance, history, runtime=elapsed, bks=bks)"""
 
     total_runtime = round((time.time() - total_start) / 60, 4)
 
