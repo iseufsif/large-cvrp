@@ -15,8 +15,8 @@ def tabu_search(instance, routes, it = 100):
     n = instance["dimension"]
     
     # Parameters:
-    max_length_tabu = math.sqrt(n)
-    size_neighborhood = n
+    max_length_tabu = math.sqrt(n) # tuned
+    size_neighborhood = round(0.8*n) # tuned
 
     for k in range(it):
         best_delta = 0
