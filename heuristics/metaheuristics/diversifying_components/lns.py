@@ -3,12 +3,14 @@ from heuristics.metaheuristics.neighborhood_operators.remove import random_remov
 from heuristics.metaheuristics.neighborhood_operators.repair import greedy_repair, regret_repair
 
 
-def fast_lns(instance, routes, max_iter=250, destroy_frac=0.2):
+def fast_lns(instance, routes, min_iter=250, destroy_frac=0.1): # destroy_frac finetuned
     current_solution = routes
     best_solution = current_solution
     best_cost = compute_total_cost(current_solution, instance["edge_weight"])
 
-    for it in range(max_iter):
+    iterations = max(min_iter, instance["dimension"])
+
+    for it in range(iterations):
         # destroy initial solution
         num_remove = int(destroy_frac * sum(len(r) for r in current_solution))
         partial_solution, removed = random_removal(current_solution, num_remove)
@@ -24,12 +26,14 @@ def fast_lns(instance, routes, max_iter=250, destroy_frac=0.2):
 
     return best_solution
 
-def smart_lns(instance, routes, max_iter=250, destroy_frac=0.2):
+def smart_lns(instance, routes, min_iter=250, destroy_frac=0.4): # destroy_frac finetuned
     current_solution = routes
     best_solution = current_solution
     best_cost = compute_total_cost(current_solution, instance["edge_weight"])
 
-    for it in range(max_iter):
+    iterations = max(min_iter, instance["dimension"])
+
+    for it in range(iterations):
         # destroy initial solution
         num_remove = int(destroy_frac * sum(len(r) for r in current_solution))
         partial_solution, removed = worst_removal(instance, current_solution, num_remove)

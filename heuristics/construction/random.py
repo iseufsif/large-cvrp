@@ -1,7 +1,5 @@
 import vrplib
-import numpy as np
 import random
-import os
 
 def generate_random_solution(instance_name):
     # load instance

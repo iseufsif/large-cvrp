@@ -242,5 +242,882 @@
                 "std_gap": 0.9
             }
         }
+    },
+    {
+        "instance_name": "A-n46-k7.vrp",
+        "dimension": 46,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 6.571428571428571,
+        "heuristics": {
+            "Random Solution": {
+                "costs": [
+                    2596.569783667707
+                ],
+                "times": [
+                    0.0
+                ],
+                "gaps": [
+                    184.09
+                ]
+            },
+            "Iterative Local Search": {
+                "costs": [
+                    1097.1475989517087
+                ],
+                "times": [
+                    0.0069
+                ],
+                "gaps": [
+                    20.04
+                ]
+            },
+            "Simulated Annealing": {
+                "costs": [
+                    1131.4519444067294
+                ],
+                "times": [
+                    0.0109
+                ],
+                "gaps": [
+                    23.79
+                ]
+            },
+            "Tabu Search": {
+                "costs": [
+                    1401.220132780125
+                ],
+                "times": [
+                    0.002
+                ],
+                "gaps": [
+                    53.31
+                ]
+            },
+            "Tabu Search + Hybrid Ls": {
+                "costs": [
+                    1303.1154882554877
+                ],
+                "times": [
+                    0.0023
+                ],
+                "gaps": [
+                    42.57
+                ]
+            },
+            "Fast LNS": {
+                "costs": [
+                    1113.54838062393
+                ],
+                "times": [
+                    0.0004
+                ],
+                "gaps": [
+                    21.83
+                ]
+            },
+            "Fast LNS + ILS Hybrid": {
+                "costs": [
+                    1026.6835783343615
+                ],
+                "times": [
+                    0.008199999999999999
+                ],
+                "gaps": [
+                    12.33
+                ]
+            },
+            "Smart LNS": {
+                "costs": [
+                    2214.122309814008
+                ],
+                "times": [
+                    0.0197
+                ],
+                "gaps": [
+                    142.25
+                ]
+            },
+            "Smart LNS + ILS Hybrid": {
+                "costs": [
+                    1011.7808000386551
+                ],
+                "times": [
+                    0.0271
+                ],
+                "gaps": [
+                    10.7
+                ]
+            },
+            "Genetic Algorithm": {
+                "costs": [
+                    1036.0656390033812
+                ],
+                "times": [
+                    0.1118
+                ],
+                "gaps": [
+                    13.36
+                ]
+            },
+            "GA + Hybrid LS": {
+                "costs": [
+                    1034.6842349673743
+                ],
+                "times": [
+                    0.1122
+                ],
+                "gaps": [
+                    13.2
+                ]
+            }
+        }
+    },
+    {
+        "instance_name": "A-n46-k7.vrp",
+        "dimension": 46,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 6.571428571428571,
+        "heuristics": {
+            "Random Solution": {
+                "costs": [
+                    2596.569783667707
+                ],
+                "times": [
+                    0.0
+                ],
+                "gaps": [
+                    184.09
+                ]
+            },
+            "Iterative Local Search": {
+                "costs": [
+                    1045.6474768759967
+                ],
+                "times": [
+                    0.0069
+                ],
+                "gaps": [
+                    14.4
+                ]
+            },
+            "Simulated Annealing": {
+                "costs": [
+                    1261.3585474754402
+                ],
+                "times": [
+                    0.0054
+                ],
+                "gaps": [
+                    38.0
+                ]
+            },
+            "LS + Simulated Annealing + LS": {
+                "costs": [
+                    1142.9182621861428
+                ],
+                "times": [
+                    0.0081
+                ],
+                "gaps": [
+                    25.05
+                ]
+            },
+            "Tabu Search": {
+                "costs": [
+                    1475.5397788083378
+                ],
+                "times": [
+                    0.0017
+                ],
+                "gaps": [
+                    61.44
+                ]
+            },
+            "Tabu Search + Hybrid Ls": {
+                "costs": [
+                    1344.644030879195
+                ],
+                "times": [
+                    0.0021
+                ],
+                "gaps": [
+                    47.12
+                ]
+            },
+            "Fast LNS": {
+                "costs": [
+                    1150.2161660407148
+                ],
+                "times": [
+                    0.0003
+                ],
+                "gaps": [
+                    25.84
+                ]
+            },
+            "Fast LNS + ILS Hybrid": {
+                "costs": [
+                    989.5414556313656
+                ],
+                "times": [
+                    0.0069
+                ],
+                "gaps": [
+                    8.26
+                ]
+            },
+            "Smart LNS": {
+                "costs": [
+                    2214.122309814008
+                ],
+                "times": [
+                    0.019
+                ],
+                "gaps": [
+                    142.25
+                ]
+            },
+            "Smart LNS + ILS Hybrid": {
+                "costs": [
+                    1040.5754813526064
+                ],
+                "times": [
+                    0.0258
+                ],
+                "gaps": [
+                    13.85
+                ]
+            },
+            "Genetic Algorithm": {
+                "costs": [
+                    1068.9365954978498
+                ],
+                "times": [
+                    0.0816
+                ],
+                "gaps": [
+                    16.95
+                ]
+            },
+            "GA + Hybrid LS": {
+                "costs": [
+                    1055.4217409857558
+                ],
+                "times": [
+                    0.0819
+                ],
+                "gaps": [
+                    15.47
+                ]
+            }
+        }
+    },
+    {
+        "instance_name": "A-n46-k7.vrp",
+        "dimension": 46,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 6.571428571428571,
+        "heuristics": {
+            "Random Solution": {
+                "costs": [
+                    2596.569783667707
+                ],
+                "times": [
+                    0.0
+                ],
+                "gaps": [
+                    184.09
+                ]
+            },
+            "Iterative Local Search": {
+                "costs": [
+                    1097.1475989517087
+                ],
+                "times": [
+                    0.0074
+                ],
+                "gaps": [
+                    20.04
+                ]
+            },
+            "Simulated Annealing (SA)": {
+                "costs": [
+                    1180.5808443755284
+                ],
+                "times": [
+                    0.0057
+                ],
+                "gaps": [
+                    29.17
+                ]
+            },
+            "LS + SA + LS": {
+                "costs": [
+                    1134.1324595857295
+                ],
+                "times": [
+                    0.0141
+                ],
+                "gaps": [
+                    24.08
+                ]
+            },
+            "Tabu Search": {
+                "costs": [
+                    1386.078524697261
+                ],
+                "times": [
+                    0.0021
+                ],
+                "gaps": [
+                    51.65
+                ]
+            },
+            "Tabu Search + Hybrid Ls": {
+                "costs": [
+                    1290.4516482635354
+                ],
+                "times": [
+                    0.0026
+                ],
+                "gaps": [
+                    41.19
+                ]
+            },
+            "Fast LNS": {
+                "costs": [
+                    1138.151542246443
+                ],
+                "times": [
+                    0.0003
+                ],
+                "gaps": [
+                    24.52
+                ]
+            },
+            "Fast LNS + ILS Hybrid": {
+                "costs": [
+                    975.3902664339332
+                ],
+                "times": [
+                    0.0073
+                ],
+                "gaps": [
+                    6.72
+                ]
+            },
+            "Smart LNS": {
+                "costs": [
+                    2214.122309814008
+                ],
+                "times": [
+                    0.02
+                ],
+                "gaps": [
+                    142.25
+                ]
+            },
+            "Smart LNS + ILS Hybrid": {
+                "costs": [
+                    1086.38210279325
+                ],
+                "times": [
+                    0.0261
+                ],
+                "gaps": [
+                    18.86
+                ]
+            },
+            "Genetic Algorithm": {
+                "costs": [
+                    1117.294685667279
+                ],
+                "times": [
+                    0.0789
+                ],
+                "gaps": [
+                    22.24
+                ]
+            },
+            "GA + Hybrid LS": {
+                "costs": [
+                    1107.029420334769
+                ],
+                "times": [
+                    0.07919999999999999
+                ],
+                "gaps": [
+                    21.12
+                ]
+            }
+        }
+    },
+    {
+        "instance_name": "A-n46-k7.vrp",
+        "dimension": 46,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 6.571428571428571,
+        "heuristics": {
+            "Random Solution": {
+                "costs": [
+                    2596.569783667707
+                ],
+                "times": [
+                    0.0
+                ],
+                "gaps": [
+                    184.09
+                ]
+            },
+            "Iterative Local Search": {
+                "costs": [
+                    1029.0389056136028
+                ],
+                "times": [
+                    0.0061
+                ],
+                "gaps": [
+                    12.59
+                ]
+            },
+            "Simulated Annealing (SA)": {
+                "costs": [
+                    1175.6460070702158
+                ],
+                "times": [
+                    0.0081
+                ],
+                "gaps": [
+                    28.63
+                ]
+            },
+            "LS + SA + LS": {
+                "costs": [
+                    1058.850063161668
+                ],
+                "times": [
+                    0.0072
+                ],
+                "gaps": [
+                    15.85
+                ]
+            },
+            "Tabu Search": {
+                "costs": [
+                    1431.197985479067
+                ],
+                "times": [
+                    0.0017
+                ],
+                "gaps": [
+                    56.59
+                ]
+            },
+            "Tabu Search + Hybrid Ls": {
+                "costs": [
+                    1233.2089869063766
+                ],
+                "times": [
+                    0.0021
+                ],
+                "gaps": [
+                    34.92
+                ]
+            },
+            "Fast LNS": {
+                "costs": [
+                    1095.1310723918677
+                ],
+                "times": [
+                    0.0003
+                ],
+                "gaps": [
+                    19.82
+                ]
+            },
+            "Fast LNS + ILS Hybrid": {
+                "costs": [
+                    1005.591210521831
+                ],
+                "times": [
+                    0.0068
+                ],
+                "gaps": [
+                    10.02
+                ]
+            },
+            "Smart LNS": {
+                "costs": [
+                    2214.122309814008
+                ],
+                "times": [
+                    0.0221
+                ],
+                "gaps": [
+                    142.25
+                ]
+            },
+            "Smart LNS + ILS Hybrid": {
+                "costs": [
+                    1047.3693599374285
+                ],
+                "times": [
+                    0.0286
+                ],
+                "gaps": [
+                    14.59
+                ]
+            },
+            "Genetic Algorithm": {
+                "costs": [
+                    1052.0443697423948
+                ],
+                "times": [
+                    0.1213
+                ],
+                "gaps": [
+                    15.1
+                ]
+            },
+            "GA + Hybrid LS": {
+                "costs": [
+                    1033.6203450026753
+                ],
+                "times": [
+                    0.1216
+                ],
+                "gaps": [
+                    13.09
+                ]
+            }
+        }
+    },
+    {
+        "instance_name": "A-n46-k7.vrp",
+        "dimension": 46,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 6.571428571428571,
+        "heuristics": {
+            "Random Solution": {
+                "costs": [
+                    2596.569783667707
+                ],
+                "times": [
+                    0.0
+                ],
+                "gaps": [
+                    184.09
+                ]
+            },
+            "Iterative Local Search": {
+                "costs": [
+                    1029.0389056136028
+                ],
+                "times": [
+                    0.0073
+                ],
+                "gaps": [
+                    12.59
+                ]
+            },
+            "Simulated Annealing (SA)": {
+                "costs": [
+                    1175.6460070702158
+                ],
+                "times": [
+                    0.0079
+                ],
+                "gaps": [
+                    28.63
+                ]
+            },
+            "LS + SA + LS": {
+                "costs": [
+                    1058.850063161668
+                ],
+                "times": [
+                    0.007
+                ],
+                "gaps": [
+                    15.85
+                ]
+            },
+            "Tabu Search": {
+                "costs": [
+                    1431.197985479067
+                ],
+                "times": [
+                    0.0021
+                ],
+                "gaps": [
+                    56.59
+                ]
+            },
+            "Tabu Search + Hybrid Ls": {
+                "costs": [
+                    1233.2089869063766
+                ],
+                "times": [
+                    0.0025
+                ],
+                "gaps": [
+                    34.92
+                ]
+            },
+            "Fast LNS": {
+                "costs": [
+                    1095.1310723918677
+                ],
+                "times": [
+                    0.0003
+                ],
+                "gaps": [
+                    19.82
+                ]
+            },
+            "Fast LNS + ILS Hybrid": {
+                "costs": [
+                    1005.591210521831
+                ],
+                "times": [
+                    0.0078
+                ],
+                "gaps": [
+                    10.02
+                ]
+            },
+            "Smart LNS": {
+                "costs": [
+                    2214.122309814008
+                ],
+                "times": [
+                    0.0207
+                ],
+                "gaps": [
+                    142.25
+                ]
+            },
+            "Smart LNS + ILS Hybrid": {
+                "costs": [
+                    1047.3693599374285
+                ],
+                "times": [
+                    0.0269
+                ],
+                "gaps": [
+                    14.59
+                ]
+            },
+            "Genetic Algorithm": {
+                "costs": [
+                    1052.0443697423948
+                ],
+                "times": [
+                    0.1161
+                ],
+                "gaps": [
+                    15.1
+                ]
+            },
+            "GA + Hybrid LS": {
+                "costs": [
+                    1033.6203450026753
+                ],
+                "times": [
+                    0.11639999999999999
+                ],
+                "gaps": [
+                    13.09
+                ]
+            }
+        }
+    },
+    {
+        "instance_name": "X-n106-k14.vrp",
+        "dimension": 106,
+        "depot": [
+            0
+        ],
+        "avg_route_size": 7.571428571428571,
+        "heuristics": {
+            "Random Solution": {
+                "costs": [
+                    57564.38432496201,
+                    56559.77724661484
+                ],
+                "times": [
+                    0.0,
+                    0.0
+                ],
+                "gaps": [
+                    118.36,
+                    114.55
+                ]
+            },
+            "Iterative Local Search": {
+                "costs": [
+                    28042.66878673022,
+                    28766.01830140819
+                ],
+                "times": [
+                    0.1369,
+                    0.1234
+                ],
+                "gaps": [
+                    6.38,
+                    9.12
+                ]
+            },
+            "Simulated Annealing (SA)": {
+                "costs": [
+                    29338.76967924765,
+                    28465.993862499723
+                ],
+                "times": [
+                    0.0929,
+                    0.0901
+                ],
+                "gaps": [
+                    11.29,
+                    7.98
+                ]
+            },
+            "LS + SA + LS": {
+                "costs": [
+                    30034.674034966927,
+                    29258.584573277796
+                ],
+                "times": [
+                    0.0666,
+                    0.0913
+                ],
+                "gaps": [
+                    13.93,
+                    10.99
+                ]
+            },
+            "Tabu Search": {
+                "costs": [
+                    31703.45119874507,
+                    30160.924946475207
+                ],
+                "times": [
+                    0.0251,
+                    0.0426
+                ],
+                "gaps": [
+                    20.26,
+                    14.41
+                ]
+            },
+            "Tabu Search + Hybrid Ls": {
+                "costs": [
+                    30969.412021413977,
+                    30091.515675134888
+                ],
+                "times": [
+                    0.0287,
+                    0.0451
+                ],
+                "gaps": [
+                    17.48,
+                    14.15
+                ]
+            },
+            "Fast LNS": {
+                "costs": [
+                    29499.028834798137,
+                    29716.790798539823
+                ],
+                "times": [
+                    0.0031,
+                    0.0032
+                ],
+                "gaps": [
+                    11.9,
+                    12.73
+                ]
+            },
+            "Fast LNS + ILS Hybrid": {
+                "costs": [
+                    28689.550098139884,
+                    28843.613379982857
+                ],
+                "times": [
+                    0.1653,
+                    0.18960000000000002
+                ],
+                "gaps": [
+                    8.83,
+                    9.41
+                ]
+            },
+            "Smart LNS": {
+                "costs": [
+                    48305.31407938319,
+                    48305.31407938319
+                ],
+                "times": [
+                    0.5196,
+                    0.5171
+                ],
+                "gaps": [
+                    83.24,
+                    83.24
+                ]
+            },
+            "Smart LNS + ILS Hybrid": {
+                "costs": [
+                    28638.28786569395,
+                    29022.176121012293
+                ],
+                "times": [
+                    0.6782999999999999,
+                    0.6994
+                ],
+                "gaps": [
+                    8.63,
+                    10.09
+                ]
+            },
+            "Genetic Algorithm": {
+                "costs": [
+                    29603.539115438638,
+                    28866.652846046545
+                ],
+                "times": [
+                    0.8834,
+                    0.6824
+                ],
+                "gaps": [
+                    12.3,
+                    9.5
+                ]
+            },
+            "GA + Hybrid LS": {
+                "costs": [
+                    29479.88679028966,
+                    28739.30320150464
+                ],
+                "times": [
+                    0.8873,
+                    0.6868
+                ],
+                "gaps": [
+                    11.83,
+                    9.02
+                ]
+            }
+        }
     }
 ]

@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 from utils.utils import compute_route_cost
+import random
 
 def two_opt_move(routes, route_idx, edge_weight):
     if not routes or len(routes[route_idx]) < 4:

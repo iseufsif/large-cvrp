@@ -24,8 +24,19 @@ import pandas as pd
 # from utils import compute_total_cost, is_feasible
 
 # ===== SETUP =====
+benchmark_instances = ["X-n502-k39.vrp", 
+                       "X-n524-k153.vrp",
+                       "X-n561-k42.vrp",
+                       "X-n641-k35.vrp",
+                       "X-n685-k75.vrp",
+                       "X-n749-k75.vrp",
+                       "X-n801-k40.vrp",
+                       "X-n856-k95.vrp",
+                       "X-n916-k207.vrp",
+                       "X-n1001-k43.vrp",]
+
 def main():
-    instance_name = "X-n101-k25.vrp"
+    instance_name = "X-n106-k14.vrp"
     instance = vrplib.read_instance("instances/" + instance_name)
 
     bks = get_bks(instance_name)
@@ -44,11 +55,17 @@ def main():
     }
 
     start_all = time.time()
+    n_iter = 2
 
-    n_iter = 1
+
     # Generate random initial solution and initialize instance
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
+        print(f"Starting iteration: {iter+1}")
+        # Setting the seeds like this ensures that the result are reproducible
+        random.seed(iter+1)
+        np.random.seed(iter+1)
+
         start = time.time()
         random_routes, instance = generate_random_solution(instance_name)
         cost_rand = compute_total_cost(random_routes, instance["edge_weight"])
@@ -57,96 +74,32 @@ def main():
         costs.append(cost_rand)
         gaps.append(round((cost_rand-bks)/bks*100, 2))
         runtimes.append(elapsed)
+        print(f"Random iteration {iter+1} done.")
 
     results["heuristics"]["Random Solution"] = {
         "costs": costs,
         "times": runtimes,
         "gaps": gaps}
 
-    # Generate Randomized Savings Solution
-    costs, gaps, runtimes = [], [], []
-    for iter in range(n_iter):
-        start = time.time()
-        sav_routes = randomized_savings(instance, 0.3)
-        cost_sav = compute_total_cost(sav_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
 
-        costs.append(cost_sav)
-        gaps.append(round((cost_sav-bks)/bks*100, 2))
-        runtimes.append(elapsed)
-
-    results["heuristics"]["Randomized Savings Solution"] = {
-        "costs": costs,
-        "times": runtimes,
-        "gaps": gaps}
-    
-    # Standalone Local Search - Swap-based
-    """costs, gaps, runtimes = [], [], []
-    for iter in range(n_iter):
-        start = time.time()
-        ls_swap_routes = ls_with_swaps(instance, sav_routes, 100)
-        cost_ls_swap = compute_total_cost(ls_swap_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
-
-        costs.append(cost_ls_swap)
-        gaps.append(round((cost_ls_swap-bks)/bks*100, 2))
-        runtimes.append(elapsed)
-
-    results["heuristics"]["Local Search with Swaps"] = {
-        "costs": costs,
-        "times": runtimes,
-        "gaps": gaps}
-
-    # Standalone Local Search - 2-Opt
-    costs, gaps, runtimes = [], [], []
-    for iter in range(n_iter):
-        start = time.time()
-        ls_2opt_routes = ls_with_2opt(instance, sav_routes, 100)
-        cost_ls_2opt = compute_total_cost(ls_2opt_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
-
-        costs.append(cost_ls_2opt)
-        gaps.append(round((cost_ls_2opt-bks)/bks*100, 2))
-        runtimes.append(elapsed)
-
-    results["heuristics"]["Local Search with Two-Opt"] = {
-        "costs": costs,
-        "times": runtimes,
-        "gaps": gaps}
-
-    # Local Search Pipeline - Swap -> 2-Opt
-    costs, gaps, runtimes = [], [], []
-    for iter in range(n_iter):
-        start = time.time()
-        ls_pipeline_routes = hybrid_ls(instance, sav_routes, 100)
-        cost_hybrid_ls = compute_total_cost(ls_pipeline_routes, instance["edge_weight"])
-        elapsed = round((time.time() - start) / 60, 4)
-
-        costs.append(cost_hybrid_ls)
-        gaps.append(round((cost_hybrid_ls-bks)/bks*100, 2))
-        runtimes.append(elapsed)
-
-    results["heuristics"]["Local Search Pipeline"] = {
-        "costs": costs,
-        "times": runtimes,
-        "gaps": gaps}
-"""
     # Iterated Local Search - Using Hybrid LS by default
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
         start = time.time()
-        ils_routes = iterated_local_search(instance, sav_routes, ls=hybrid_ls, it=n, destroy_factor=0.1)
+        ils_routes = iterated_local_search(instance, random_routes, ls=hybrid_ls, it=n, destroy_factor=0.1)
         cost_ils = compute_total_cost(ils_routes, instance["edge_weight"])
         elapsed = round((time.time() - start) / 60, 4)
 
         costs.append(cost_ils)
         gaps.append(round((cost_ils-bks)/bks*100, 2))
         runtimes.append(elapsed)
+        print(f"ILS iteration {iter+1} done.")
 
     results["heuristics"]["Iterative Local Search"] = {
         "costs": costs,
         "times": runtimes,
         "gaps": gaps}
+
 
     # Standalone Simulated Annealing
     costs, gaps, runtimes = [], [], []
@@ -159,41 +112,48 @@ def main():
         costs.append(cost_sa)
         gaps.append(round((cost_sa-bks)/bks*100, 2))
         runtimes.append(elapsed)
+        print(f"SA iteration {iter+1} done.")
 
-    results["heuristics"]["Simulated Annealing"] = {
+    results["heuristics"]["Simulated Annealing (SA)"] = {
         "costs": costs,
         "times": runtimes,
         "gaps": gaps}
 
-    """# LS + Simulated Annealing
+    
+    # Hybrid LS + Simulated Annealing + Hybrid LS
     costs, gaps, runtimes = [], [], []
     for iter in range(n_iter):
         start = time.time()
-        ls_sa_routes = simulated_annealing(instance, ls_pipeline_routes)
-        cost_ls_sa = compute_total_cost(ls_sa_routes, instance["edge_weight"])
+        ls_routes = hybrid_ls(instance, random_routes)
+        ls_sa_routes = simulated_annealing(instance, ls_routes, n)
+        ls_sa_ls_routes = hybrid_ls(instance, ls_sa_routes)
+        cost_ls_sa_ls = compute_total_cost(ls_sa_ls_routes, instance["edge_weight"])
         elapsed = round((time.time() - start) / 60, 4)
 
-        costs.append(cost_ls_sa)
-        gaps.append(round((cost_ls_sa-bks)/bks*100, 2))
+        costs.append(cost_ls_sa_ls)
+        gaps.append(round((cost_ls_sa_ls-bks)/bks*100, 2))
         runtimes.append(elapsed)
+        print(f"LS+SA+LS iteration {iter+1} done.")
 
-    results["heuristics"]["LS + Simulated Annealing"] = {
+    results["heuristics"]["LS + SA + LS"] = {
         "costs": costs,
         "times": runtimes,
         "gaps": gaps}
-"""
+
+
     # Tabu Search
     costs_tabu, gaps_tabu, runtimes_tabu = [], [], []
     costs_tabu_hls, gaps_tabu_hls, runtimes_tabu_hls = [],[],[]
     for iter in range(n_iter):
         start = time.time()
-        tabu_routes = tabu_search(instance, sav_routes,n)
+        tabu_routes = tabu_search(instance, random_routes,n)
         cost_tabu = compute_total_cost(tabu_routes, instance["edge_weight"])
         elapsed1 = round((time.time() - start) / 60, 4)
 
         costs_tabu.append(cost_tabu)
         gaps_tabu.append(round((cost_tabu-bks)/bks*100, 2))
         runtimes_tabu.append(elapsed1)
+        print(f"Tabu iteration {iter+1} done.")
 
     # Tabu Search + Hybrid LS
         start = time.time()
@@ -204,6 +164,7 @@ def main():
         costs_tabu_hls.append(cost_tabu_hls)
         gaps_tabu_hls.append(round((cost_tabu_hls-bks)/bks*100, 2))
         runtimes_tabu_hls.append(elapsed1 + elapsed2)
+        print(f"Tabu+LS iteration {iter+1} done.")
 
     results["heuristics"]["Tabu Search"] = {
         "costs": costs_tabu,
@@ -215,18 +176,20 @@ def main():
         "times": runtimes_tabu_hls,
         "gaps": gaps_tabu_hls}
 
+
     # Fast LNS
     costs_lns, gaps_lns, runtimes_lns = [], [], []
     costs_lns_ils, gaps_lns_ils, runtimes_lns_ils = [], [], []
     for iter in range(n_iter):
         start = time.time()
-        fast_lns_routes = fast_lns(instance, sav_routes, n)
+        fast_lns_routes = fast_lns(instance, random_routes, n)
         cost_fast_lns = compute_total_cost(fast_lns_routes, instance["edge_weight"])
         elapsed1 = round((time.time() - start) / 60, 4)
 
         costs_lns.append(cost_fast_lns)
         gaps_lns.append(round((cost_fast_lns-bks)/bks*100, 2))
         runtimes_lns.append(elapsed1)
+        print(f"Fast LNS iteration {iter+1} done.")
 
     # Fast LNS + ILS
         start = time.time()
@@ -237,6 +200,7 @@ def main():
         costs_lns_ils.append(cost_fast_lns_ils)
         gaps_lns_ils.append(round((cost_fast_lns_ils-bks)/bks*100, 2))
         runtimes_lns_ils.append(elapsed1 + elapsed2)
+        print(f"Fast LNS + ILS iteration {iter+1} done.")
 
     results["heuristics"]["Fast LNS"] = {
         "costs": costs_lns,
@@ -248,18 +212,20 @@ def main():
         "times": runtimes_lns_ils,
         "gaps": gaps_lns_ils}
 
+
     # Smart LNS
     costs_lns, gaps_lns, runtimes_lns = [], [], []
     costs_lns_ils, gaps_lns_ils, runtimes_lns_ils = [], [], []
     for iter in range(n_iter):
         start = time.time()
-        smart_lns_routes = smart_lns(instance, sav_routes, n)
+        smart_lns_routes = smart_lns(instance, random_routes, n)
         cost_smart_lns = compute_total_cost(smart_lns_routes, instance["edge_weight"])
         elapsed1 = round((time.time() - start) / 60, 4)
 
         costs_lns.append(cost_smart_lns)
         gaps_lns.append(round((cost_smart_lns-bks)/bks*100, 2))
         runtimes_lns.append(elapsed1)
+        print(f"Smart LNS iteration {iter+1} done.")
 
     # Smart LNS + ILS
         start = time.time()
@@ -270,6 +236,7 @@ def main():
         costs_lns_ils.append(cost_smart_lns_ils)
         gaps_lns_ils.append(round((cost_smart_lns_ils-bks)/bks*100, 2))
         runtimes_lns_ils.append(elapsed1+elapsed2)
+        print(f"Smart LNS + ILS iteration {iter+1} done.")
 
     results["heuristics"]["Smart LNS"] = {
         "costs": costs_lns,
@@ -293,6 +260,8 @@ def main():
         costs_ga.append(cost_ga)
         gaps_ga.append(round((cost_ga-bks)/bks*100, 2))
         runtimes_ga.append(elapsed1)
+        print(f"GA iteration {iter+1} done.")
+
 
     # GA + Hybrid LS
         start = time.time()
@@ -303,6 +272,7 @@ def main():
         costs_ga_hls.append(cost_ga_hls)
         gaps_ga_hls.append(round((cost_ga_hls-bks)/bks*100, 2))
         runtimes_ga_hls.append(elapsed1+elapsed2)
+        print(f"GA+LS iteration {iter+1} done.")
 
     results["heuristics"]["Genetic Algorithm"] = {
         "costs": costs_ga,
@@ -321,11 +291,11 @@ def main():
     print("\n==================== Heuristic Comparison ====================")
     print(f"\nInstance Name: {instance_name}")
     print(f"Best Known Solution: {bks}")
-    print(f"\n{'Label':<25} | {'Cost':<10} | {'Gap (%)':<8} | {'Time (min)':<10}")
+    print(f"\n{'Label':<35} | {'Cost':<10} | {'Gap (%)':<8} | {'Time (min)':<10}")
     print("-" * 62)
     for label in results["heuristics"].keys():
         stats = results["heuristics"][label]
-        print(f"{label:<25} | "
+        print(f"{label:<35} | "
             f"{np.mean(stats['costs']):<10.2f} | "
             f"{np.mean(stats['gaps']):<8.2f}% | "
             f"{np.mean(stats['times']):<10.4f}")

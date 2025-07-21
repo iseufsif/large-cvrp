@@ -1,5 +1,6 @@
 import copy
 from utils.utils import is_feasible, compute_total_cost
+import random
 
 # greedy repair is the cheapest feasible insertion
 def greedy_repair(instance, solution, removed_customers):
@@ -11,13 +12,25 @@ def greedy_repair(instance, solution, removed_customers):
         best_position = None
         best_route_idx = None
 
-        for r_idx, route in enumerate(solution):
+        # this helps go go from O(n**2) to O(n) -- tradeoff: performance (-) for runtime (-)
+        sampled_routes = random.sample(solution, min(len(solution), 25))  # sample 25 routes
+
+        for route in sampled_routes:
+            r_idx = solution.index(route)
             for i in range(len(route) + 1):
-                new_route = route[:i] + [cust] + route[i:]
-                if is_feasible(new_route, instance):
-                    cost = compute_total_cost([new_route], instance["edge_weight"])
-                    if cost < best_cost:
-                        best_cost = cost
+                prev = route[i - 1] if i > 0 else 0
+                next = route[i] if i < len(route) else 0
+
+                delta_cost = (
+                    instance["edge_weight"][prev][cust] +
+                    instance["edge_weight"][cust][next] -
+                    instance["edge_weight"][prev][next]
+                )
+
+                if delta_cost < best_cost:
+                    new_route = route[:i] + [cust] + route[i:]
+                    if is_feasible(new_route, instance):
+                        best_cost = delta_cost
                         best_position = i
                         best_route_idx = r_idx
 

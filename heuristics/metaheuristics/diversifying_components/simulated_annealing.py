@@ -8,7 +8,7 @@ from heuristics.metaheuristics.neighborhood_operators.exchange import exchange_m
 import math
 import copy
 
-def simulated_annealing(instance, routes, max_no_improvement=100, alpha=0.1, beta=0.9): # parameters tuned
+def simulated_annealing(instance, routes, min_no_improvement=100, alpha=0.1, beta=0.9): # parameters tuned
     # Initialize
     current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
@@ -18,9 +18,7 @@ def simulated_annealing(instance, routes, max_no_improvement=100, alpha=0.1, bet
     temperature = alpha * current_length
     cooling = beta
 
-    # Set seed to reproduce random based results
-    # np.random.seed(1)
-
+    max_no_improvement = max(min_no_improvement, instance["dimension"])
     # Start LS
     # start_time = time.time()
     no_improv = 0

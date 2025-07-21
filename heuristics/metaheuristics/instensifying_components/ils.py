@@ -3,8 +3,9 @@ from heuristics.metaheuristics.neighborhood_operators.repair import greedy_repai
 from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
 from utils.utils import compute_total_cost
 import copy
+import random
 
-def perturb(instance, routes, destroy_factor=0.1):
+def perturb(instance, routes, destroy_factor=0.2):
     num_customers = sum(len(r) for r in routes)
     num_remove = int(num_customers * destroy_factor)
 
@@ -14,15 +15,16 @@ def perturb(instance, routes, destroy_factor=0.1):
     #     raise RuntimeError("❌ [ILS] Repair failed and returned None")
     return repaired
 
-def iterated_local_search(instance, initial_solution, ls=hybrid_ls, it=100, destroy_factor=0.1):
+def iterated_local_search(instance, initial_solution, ls=hybrid_ls, it=100, destroy_factor=0.2): # destroy_factor finetuned
+
     current = ls(instance, copy.deepcopy(initial_solution), it)
     current_cost = compute_total_cost(current, instance["edge_weight"])
     best = current
     best_cost = current_cost
 
     # this helps to start ls with fewer iterations in early stages of ILS, where gains are found quickly
-    base_ils_it = int(it / 4)
-    max_ils_it = it
+    base_ils_it = int(it / 5)
+    max_ils_it = max(it, instance["dimension"])
 
     for _ in range(it):
         perturbed = perturb(instance, current, destroy_factor)
@@ -39,6 +41,9 @@ def iterated_local_search(instance, initial_solution, ls=hybrid_ls, it=100, dest
                 best_cost = current_cost
 
     return best
+
+
+### Functions for Debugging Purposes ###
 
 def check_integrity(routes, instance):
     expected = set(range(1, instance["dimension"]))
