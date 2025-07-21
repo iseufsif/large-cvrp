@@ -148,7 +148,7 @@ def diversity(population):
             div += diff / len(individual["cromosoms"])
         individual["div"] = div / (len(population) - 1)
 
-def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
+def genetic_algorithm(instance, pop_size, max_no_improv = 100):
 
     # Initialize the population of individuals
     pop = []
@@ -179,17 +179,17 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
     p_mut = 0.2 # tuned
     gen_size = 25 # from literature
     penalty = 10
-    ref_ratio = 0.2 # from literature#
 
     no_improv = 0
     it = 1
+    n = instance["dimension"]
     best_cost = min(ind["Z"] for ind in pop)
 
     # Algorithm
     while no_improv < max_no_improv: 
         new_best_sol_found = False
         fitness_quality(pop)
-        if it%10 == 0: # tuned
+        if it%round(0.1*n) == 0: # tuned
             diversity(pop)
         calculate_combined_fitness(pop, n_elite)
         calculate_probabilities(pop)
@@ -246,27 +246,6 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
 
         # Replacement
         pop = sorted(pop, key=lambda ind: ind["Z"])[:pop_size+gen_size]
-
-        # Population Management
-        num_infeasible = 0
-        num_feasible = 0
-        for sol in pop:
-            if sol["feasible"] is True:
-                num_feasible += 1
-            else:
-                num_infeasible += 1 
-
-        if num_feasible == 0:
-            penalty = penalty*2
-            continue
-
-        ratio = num_infeasible/num_feasible
-
-        if ratio > ref_ratio: # We want to have 20% of infeasible solutions in our population
-            penalty = penalty*1.1
-        else:
-            penalty = penalty*0.9
-        
         
         # Improvement Management
         if new_best_sol_found is True:
@@ -275,7 +254,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
             no_improv += 1
 
         # After 250 iteration with no improvement, we replace some individuals with random solutions
-        if no_improv > 250 and no_improv%35 == 0: # Tuned
+        if no_improv > (2.5*n) and no_improv%round(0.25*n) == 0: # Tuned
             num_replace = int(pop_size * 0.2)
             new_individuals = []
             for _ in range(num_replace):
@@ -292,7 +271,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 1000):
                 ind["feasible"] = capacity_check(sol, instance)
                 new_individuals.append(ind)
             pop = pop[:-num_replace] + new_individuals
-        #print(no_improv)
+        print(no_improv)
         it +=1
 
     return best_sol
