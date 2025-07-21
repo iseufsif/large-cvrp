@@ -26,7 +26,7 @@ def fast_lns(instance, routes, min_iter=250, destroy_frac=0.1): # destroy_frac f
 
     return best_solution
 
-def smart_lns(instance, routes, min_iter=250, destroy_frac=0.4): # destroy_frac finetuned
+def smart_lns(instance, routes, min_iter=100, destroy_frac=0.4): # destroy_frac finetuned
     current_solution = routes
     best_solution = current_solution
     best_cost = compute_total_cost(current_solution, instance["edge_weight"])

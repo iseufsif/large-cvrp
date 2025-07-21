@@ -271,7 +271,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
                 ind["feasible"] = capacity_check(sol, instance)
                 new_individuals.append(ind)
             pop = pop[:-num_replace] + new_individuals
-        print(no_improv)
+        # print(no_improv)
         it +=1
 
     return best_sol
