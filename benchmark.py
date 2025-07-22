@@ -32,7 +32,7 @@ benchmark_instances = ["X-n502-k39.vrp",
 # ========================= MAIN =========================
 def main():
     # Initialize
-    instance_name = "X-n129-k18.vrp"
+    instance_name = "A-n53-k7.vrp"
     instance = vrplib.read_instance("instances/" + instance_name)
     bks = get_bks(instance_name)
     name_no_ext = instance_name.lower().replace(".vrp", "")
@@ -127,7 +127,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     max_label_len = 38  # Max Label Length
     def print_aligned(label):
         dashes = '-' * max(3, (max_label_len - len(label) + 3))
-        print(f"{label} {dashes} ✔️ ---")
+        print(f"{label} {dashes} ✔️   -----")
 
     results = {}
     
@@ -141,7 +141,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
 
     # Iterated Local Search
     start = time.time()
-    ils_routes = iterated_local_search(deepcopy(instance), deepcopy(random_routes), ls=hybrid_ls, it=n, destroy_factor=0.1)
+    ils_routes = iterated_local_search(deepcopy(instance), deepcopy(random_routes), ls=hybrid_ls, destroy_factor=0.1)
     cost_ils = compute_total_cost(ils_routes, instance["edge_weight"])
     elapsed = round((time.time() - start) / 60, 4)
     results["ILS"] = (cost_ils, elapsed)
@@ -149,7 +149,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
 
     # Standalone Simulated Annealing
     start = time.time()
-    sa_routes = simulated_annealing(deepcopy(instance), deepcopy(random_routes), n)
+    sa_routes = simulated_annealing(deepcopy(instance), deepcopy(random_routes))
     cost_sa = compute_total_cost(sa_routes, instance["edge_weight"])
     elapsed = round((time.time() - start) / 60, 4)
     results["SA"] = (cost_sa, elapsed)
@@ -158,7 +158,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     # Hybrid LS + Simulated Annealing + Hybrid LS
     start = time.time()
     ls_routes = hybrid_ls(deepcopy(instance), deepcopy(random_routes))
-    ls_sa_routes = simulated_annealing(deepcopy(instance), ls_routes, n)
+    ls_sa_routes = simulated_annealing(deepcopy(instance), ls_routes)
     ls_sa_ls_routes = hybrid_ls(deepcopy(instance), ls_sa_routes)
     cost_ls_sa_ls = compute_total_cost(ls_sa_ls_routes, instance["edge_weight"])
     elapsed = round((time.time() - start) / 60, 4)
@@ -167,14 +167,14 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
 
     # Tabu Search
     start = time.time()
-    tabu_routes = tabu_search(deepcopy(instance), deepcopy(random_routes), n)
+    tabu_routes = tabu_search(deepcopy(instance), deepcopy(random_routes))
     cost_tabu = compute_total_cost(tabu_routes, instance["edge_weight"])
     elapsed1 = round((time.time() - start) / 60, 4)
     results["Tabu"] = (cost_tabu, elapsed1)
     print_aligned(f"Tabu Solution Iteration: {iter_seed}")
 
     # Tabu Search + Hybrid LS
-    tabu_hls_routes = hybrid_ls(deepcopy(instance), tabu_routes, n)
+    tabu_hls_routes = hybrid_ls(deepcopy(instance), tabu_routes)
     cost_tabu_hls = compute_total_cost(tabu_hls_routes, instance["edge_weight"])
     elapsed2 = round((time.time() - start) / 60, 4)
     results["Tabu+LS"] = (cost_tabu_hls, elapsed2)
@@ -182,14 +182,14 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
 
     # Fast LNS
     start = time.time()
-    fast_lns_routes = fast_lns(deepcopy(instance), deepcopy(random_routes), n)
+    fast_lns_routes = fast_lns(deepcopy(instance), deepcopy(random_routes))
     cost_fast_lns = compute_total_cost(fast_lns_routes, instance["edge_weight"])
     elapsed1 = round((time.time() - start) / 60, 4)
     results["Fast LNS"] = (cost_fast_lns, elapsed1)
     print_aligned(f"Fast LNS Solution Iteration: {iter_seed}")
 
     # Fast LNS + ILS
-    fast_lns_ils_routes = iterated_local_search(deepcopy(instance), fast_lns_routes, it=n)
+    fast_lns_ils_routes = iterated_local_search(deepcopy(instance), fast_lns_routes)
     cost_fast_lns_ils = compute_total_cost(fast_lns_ils_routes, instance["edge_weight"])
     elapsed2 = round((time.time() - start) / 60, 4)
     results["Fast LNS + ILS"] = (cost_fast_lns_ils, elapsed2)
@@ -197,14 +197,14 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
 
     # Smart LNS
     start = time.time()
-    smart_lns_routes = smart_lns(deepcopy(instance), deepcopy(random_routes), n)
+    smart_lns_routes = smart_lns(deepcopy(instance), deepcopy(random_routes))
     cost_smart_lns = compute_total_cost(smart_lns_routes, instance["edge_weight"])
     elapsed1 = round((time.time() - start) / 60, 4)
     results["Smart LNS"] = (cost_smart_lns, elapsed1)
     print_aligned(f"Smart LNS Solution Iteration: {iter_seed}")
 
     # Smart LNS + ILS
-    smart_lns_ils_routes = iterated_local_search(deepcopy(instance), smart_lns_routes, it=n)
+    smart_lns_ils_routes = iterated_local_search(deepcopy(instance), smart_lns_routes)
     cost_smart_lns_ils = compute_total_cost(smart_lns_ils_routes, instance["edge_weight"])
     elapsed2 = round((time.time() - start) / 60, 4)
     results["Smart LNS + ILS"] = (cost_smart_lns_ils, elapsed2)
