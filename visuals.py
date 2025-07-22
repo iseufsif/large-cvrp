@@ -61,8 +61,17 @@ for heuristic in heuristics_names:
         else:
             box_colors.append((1,1,1,1))  # white if not numerical
 
-    plt.figure(figsize=(max(8, len(instance_labels)*1.2), 6))
-    box = plt.boxplot(costs_per_instance, patch_artist=True, tick_labels=instance_labels, showmeans=False)
+    # Sort by dimension
+    combined = sorted(zip(dimensions, costs_per_instance, instance_labels), key=lambda x: x[0])
+    sorted_dims, sorted_costs, sorted_labels = zip(*combined)
+
+    # Normalize again for color mapping
+    norm = mpl.colors.Normalize(vmin=min(sorted_dims), vmax=max(sorted_dims))
+    box_colors = [cmap(norm(d)) for d in sorted_dims]
+
+    # Plot with sorted values
+    plt.figure(figsize=(max(8, len(sorted_labels)*1.2), 6))
+    box = plt.boxplot(sorted_costs, patch_artist=True, tick_labels=sorted_labels, showmeans=False)
     for patch, color in zip(box['boxes'], box_colors):
         patch.set_facecolor(color)
     # Make median line thicker and black
