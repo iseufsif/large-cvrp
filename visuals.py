@@ -1,23 +1,35 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib as mpl
 
 # --- Set Up ---
 with open("output/results.json", "r") as f:
     raw_data = json.load(f)
 
+# We will need that later to 
+benchmark_instances = ["X-n502-k39.vrp", 
+                       "X-n524-k153.vrp",
+                       "X-n561-k42.vrp",
+                       "X-n641-k35.vrp",
+                       "X-n685-k75.vrp",
+                       "X-n749-k75.vrp",
+                       "X-n801-k40.vrp",
+                       "X-n856-k95.vrp",
+                       "X-n916-k207.vrp",
+                       "X-n1001-k43.vrp",]
+
 if isinstance(raw_data, dict) and "heuristics" in raw_data:
     data = [raw_data]
 else:
     data = raw_data
+    # Uncomment below to only get the data from the results.json, which are for our selected benchmarks.
+    # data = [entry for entry in raw_data if entry.get("instance_name") in benchmark_instances]
 
+
+# why exclude?
 heuristics_names = [h for h in data[0]["heuristics"].keys() if h.lower() not in ["random", "smart lns"]]  # Exclude 'Random' and 'Smart LNS' heuristics
-
-# --- Gaps Boxplot for each instance, for each heuristic ---
-import numpy as np
-import matplotlib as mpl
-
-
 
 # --- Compute global min and max for y-axis (GAP), excluding 'Random' and 'Smart LNS' heuristics ---
 all_gaps = []

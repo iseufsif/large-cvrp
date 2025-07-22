@@ -32,7 +32,7 @@ benchmark_instances = ["X-n502-k39.vrp",
 # ========================= MAIN =========================
 def main():
     # Initialize
-    instance_name = "A-n53-k7.vrp"
+    instance_name = benchmark_instances[0]
     instance = vrplib.read_instance("instances/" + instance_name)
     bks = get_bks(instance_name)
     name_no_ext = instance_name.lower().replace(".vrp", "")
