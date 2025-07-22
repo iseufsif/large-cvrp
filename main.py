@@ -8,7 +8,7 @@ from heuristics.construction.random import generate_random_solution
 from heuristics.construction.random_savings import randomized_savings
 from utils.utils import compute_total_cost, write_solution, print_solution, log_results, get_bks
 from utils.plot import plot_routes
-from heuristics.metaheuristics.instensifying_components.ls import ls_with_2opt, ls_with_swaps, hybrid_ls
+from heuristics.improvement.ls import ls_with_2opt, ls_with_swaps, hybrid_ls
 from heuristics.metaheuristics.instensifying_components.ils import iterated_local_search, check_solution_integrity
 from heuristics.metaheuristics.diversifying_components.simulated_annealing import simulated_annealing
 from heuristics.metaheuristics.instensifying_components.tabu import tabu_search

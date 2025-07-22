@@ -1,6 +1,3 @@
-# implement local search here
-import time
-import numpy as np
 import random
 import copy
 from utils.utils import compute_total_cost
@@ -11,8 +8,6 @@ def ls_with_2opt(instance, routes, it=100):
     current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
     
-    # Start LS
-    # start_time = time.time()
     improv = True
     while improv:
         improv = False
@@ -33,8 +28,6 @@ def ls_with_swaps(instance, routes, it=100):
     current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
     
-    # Start LS
-    # start_time = time.time()
     improv = True
     iter = 1
     while improv:

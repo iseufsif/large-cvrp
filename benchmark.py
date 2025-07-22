@@ -5,7 +5,7 @@ from copy import deepcopy
 
 from heuristics.construction.random import generate_random_solution
 from utils.utils import compute_total_cost, get_bks, convert_ndarrays
-from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
+from heuristics.improvement.ls import hybrid_ls
 from heuristics.metaheuristics.instensifying_components.ils import iterated_local_search
 from heuristics.metaheuristics.diversifying_components.simulated_annealing import simulated_annealing
 from heuristics.metaheuristics.instensifying_components.tabu import tabu_search

@@ -1,6 +1,6 @@
 from heuristics.metaheuristics.diversifying_components.genetic_algorithm import is_duplicate,split,fitness_quality, calculate_probabilities, parent_selection, order_crossover,capacity_check, calculate_combined_fitness, diversity
 from utils.tsp_solvers_for_GA import tsp_solver_nn, tsp_solver_ls
-from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
+from heuristics.improvement.ls import hybrid_ls
 import numpy as np
 from utils.utils import compute_total_cost
 import random

@@ -5,7 +5,7 @@ import copy
 import random
 from utils.tsp_solvers_for_GA import tsp_solver_ls, tsp_solver_nn
 from heuristics.construction.random import generate_random_solution
-from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
+from heuristics.improvement.ls import hybrid_ls
 
 def split(permutation, demand, capacity):
     routes = []

@@ -1,6 +1,6 @@
 from heuristics.metaheuristics.neighborhood_operators.remove import random_removal
 from heuristics.metaheuristics.neighborhood_operators.repair import greedy_repair
-from heuristics.metaheuristics.instensifying_components.ls import hybrid_ls
+from heuristics.improvement.ls import hybrid_ls
 from utils.utils import compute_total_cost
 import copy
 import random
