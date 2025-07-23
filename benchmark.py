@@ -32,7 +32,7 @@ benchmark_instances = ["X-n502-k39.vrp",
 # ========================= MAIN =========================
 def main():
     # Initialize
-    instance_name = benchmark_instances[0]
+    instance_name = "X-n251-k28.vrp"
     instance = vrplib.read_instance("instances/" + instance_name)
     bks = get_bks(instance_name)
     name_no_ext = instance_name.lower().replace(".vrp", "")
@@ -127,7 +127,8 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     max_label_len = 38  # Max Label Length
     def print_aligned(label):
         dashes = '-' * max(3, (max_label_len - len(label) + 3))
-        print(f"{label} {dashes} ✔️   -----")
+        current_time = time.strftime("%H:%M:%S", time.localtime())
+        print(f"{label} {dashes} ✔️   ----- {current_time} -----")
 
     results = {}
     
@@ -219,7 +220,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     print_aligned(f"GA Solution Iteration: {iter_seed}")
 
     # GA + Hybrid LS
-    routes_ga_hls = hybrid_ls(deepcopy(instance), routes_ga, n)
+    routes_ga_hls = hybrid_ls(deepcopy(instance), routes_ga)
     cost_ga_hls = compute_total_cost(routes_ga_hls, instance["edge_weight"])
     elapsed2 = round((time.time() - start) / 60, 4)
     results["GA+LS"] = (cost_ga_hls, elapsed2)
