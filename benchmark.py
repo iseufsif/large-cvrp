@@ -31,90 +31,92 @@ benchmark_instances = ["X-n502-k39.vrp",
 
 # ========================= MAIN =========================
 def main():
-    # Initialize
-    instance_name = benchmark_instances[0]
-    instance = vrplib.read_instance("instances/" + instance_name)
-    bks = get_bks(instance_name)
-    name_no_ext = instance_name.lower().replace(".vrp", "")
-    k = int(name_no_ext.split("k")[1])
-    n = instance["dimension"]
-    avg_route_size = n/k
+    for i in range(1,2):
+        # Initialize
+        instance_name = benchmark_instances[3]
+        print("\n",instance_name)
+        instance = vrplib.read_instance("instances/" + instance_name)
+        bks = get_bks(instance_name)
+        name_no_ext = instance_name.lower().replace(".vrp", "")
+        k = int(name_no_ext.split("k")[1])
+        n = instance["dimension"]
+        avg_route_size = n/k
 
-    # Prepare Instance's Result Format 
-    results = {
-        "instance_name": instance_name,
-        "dimension": n,
-        "depot": instance["depot"],
-        "avg_route_size": avg_route_size,
-        "total_benchmark_time": None,
-        "heuristics": {}
-    }
+        # Prepare Instance's Result Format 
+        results = {
+            "instance_name": instance_name,
+            "dimension": n,
+            "depot": instance["depot"],
+            "avg_route_size": avg_route_size,
+            "total_benchmark_time": None,
+            "heuristics": {}
+        }
 
-    # SET NUMBER OF ITERATIONS PER INSTANCE HERE:
-    #        vv
-    n_iter = 10
+        # SET NUMBER OF ITERATIONS PER INSTANCE HERE:
+        #        vv
+        n_iter = 10
 
-    seeds = list(range(1, n_iter + 1))
-    start_all = time.time()
+        seeds = list(range(1, n_iter + 1))
+        start_all = time.time()
 
-    # Run n_iter in Parallel via Multiprocessing
-    with Pool(processes=min(cpu_count(), n_iter)) as pool:
-        args = [(seed, instance_name, bks, n, k) for seed in seeds]
-        all_results = pool.starmap(run_iteration, args)
+        # Run n_iter in Parallel via Multiprocessing
+        with Pool(processes=min(cpu_count(), n_iter)) as pool:
+            args = [(seed, instance_name, bks, n, k) for seed in seeds]
+            all_results = pool.starmap(run_iteration, args)
 
-    # Aggregate Results
-    aggregated = {}
-    for _, iteration_result in all_results:
-        for method, (cost, time_) in iteration_result.items():
-            if method not in aggregated:
-                aggregated[method] = {"costs": [], "gaps": [], "times": []}
-            aggregated[method]["costs"].append(cost)
-            aggregated[method]["gaps"].append(round((cost - bks) / bks * 100, 2))
-            aggregated[method]["times"].append(time_)
+        # Aggregate Results
+        aggregated = {}
+        for _, iteration_result in all_results:
+            for method, (cost, time_) in iteration_result.items():
+                if method not in aggregated:
+                    aggregated[method] = {"costs": [], "gaps": [], "times": []}
+                aggregated[method]["costs"].append(cost)
+                aggregated[method]["gaps"].append(round((cost - bks) / bks * 100, 2))
+                aggregated[method]["times"].append(time_)
 
-    results["heuristics"] = aggregated
-    
-    # Track Benchmarking Runtime
-    total_runtime = (time.time() - start_all) / 60
-    results["total_benchmark_time"] = total_runtime
+        results["heuristics"] = aggregated
+        
+        # Track Benchmarking Runtime
+        total_runtime = (time.time() - start_all) / 60
+        results["total_benchmark_time"] = total_runtime
 
-    # Print Results
-    print("\n==================== Heuristic Comparison ====================")
-    print(f"\nInstance Name: {instance_name}")
-    print(f"Best Known Solution: {bks}")
-    print(f"\n{'Label':<16} | {'Mean Cost':<10} | {'Mean Gap (%)':<12} | {'Mean Time (min)':<16}")
-    print("-" * 62)
-    for label in results["heuristics"].keys():
-        stats = results["heuristics"][label]
-        print(f"{label:<16} | "
-            f"{np.mean(stats['costs']):<10.2f} | "
-            f"{np.mean(stats['gaps']):<11.2f}% | "
-            f"{np.mean(stats['times']):<16.4f}")
+        # Print Results
+        print("\n==================== Heuristic Comparison ====================")
+        print(f"\nInstance Name: {instance_name}")
+        print(f"Best Known Solution: {bks}")
+        print(f"\n{'Label':<16} | {'Mean Cost':<10} | {'Mean Gap (%)':<12} | {'Mean Time (min)':<16}")
+        print("-" * 62)
+        for label in results["heuristics"].keys():
+            stats = results["heuristics"][label]
+            print(f"{label:<16} | "
+                f"{np.mean(stats['costs']):<10.2f} | "
+                f"{np.mean(stats['gaps']):<11.2f}% | "
+                f"{np.mean(stats['times']):<16.4f}")
 
-    print(f"\nTotal Runtime in Minutes: {total_runtime:.2f}")
+        print(f"\nTotal Runtime in Minutes: {total_runtime:.2f}")
 
-    # Save Results to JSON
-    results = convert_ndarrays(results)
-    json_filename = os.path.join("output", "results.json")
+        # Save Results to JSON
+        results = convert_ndarrays(results)
+        json_filename = os.path.join("output", "results.json")
 
-    # If file exists and contains a list, upload it and add the new result
-    if os.path.exists(json_filename):
-        with open(json_filename, "r") as f:
-            try:
-                data = json.load(f)
-                if isinstance(data, list):
-                    results_list = data
-                else:
-                    results_list = [data]
-            except Exception:
-                results_list = []
-    else:
-        results_list = []
+        # If file exists and contains a list, upload it and add the new result
+        if os.path.exists(json_filename):
+            with open(json_filename, "r") as f:
+                try:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        results_list = data
+                    else:
+                        results_list = [data]
+                except Exception:
+                    results_list = []
+        else:
+            results_list = []
 
-    results_list.append(results)
+        results_list.append(results)
 
-    with open(json_filename, "w") as f:
-        json.dump(results_list, f, indent=4)
+        with open(json_filename, "w") as f:
+            json.dump(results_list, f, indent=4)
 
 # ========================= RUN SINGLE ITERATION =========================
 def run_iteration(iter_seed, instance_name, bks, n, k):
@@ -195,7 +197,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     results["Fast LNS + ILS"] = (cost_fast_lns_ils, elapsed2)
     print_aligned(f"Fast LNS + ILS Solution Iteration: {iter_seed}")
 
-    # Smart LNS
+    """# Smart LNS
     start = time.time()
     smart_lns_routes = smart_lns(deepcopy(instance), deepcopy(random_routes))
     cost_smart_lns = compute_total_cost(smart_lns_routes, instance["edge_weight"])
@@ -208,7 +210,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     cost_smart_lns_ils = compute_total_cost(smart_lns_ils_routes, instance["edge_weight"])
     elapsed2 = round((time.time() - start) / 60, 4)
     results["Smart LNS + ILS"] = (cost_smart_lns_ils, elapsed2)
-    print_aligned(f"Smart LNS + ILS Solution Iteration: {iter_seed}")
+    print_aligned(f"Smart LNS + ILS Solution Iteration: {iter_seed}")"""
 
     # Genetic Algorithm
     start = time.time()
