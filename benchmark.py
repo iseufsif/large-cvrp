@@ -31,9 +31,9 @@ benchmark_instances = ["X-n502-k39.vrp",
 
 # ========================= MAIN =========================
 def main():
-    for i in range(4,5):
+    for i in range(0,1):
         # Initialize
-        instance_name = benchmark_instances[5]
+        instance_name = benchmark_instances[8]
         print("\n",instance_name)
         instance = vrplib.read_instance("instances/" + instance_name)
         bks = get_bks(instance_name)
@@ -141,7 +141,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     results["Random"] = (cost_rand, elapsed)
     print_aligned(f"Random Solution Iteration: {iter_seed}")
 
-    # Iterated Local Search
+    """# Iterated Local Search
     start = time.time()
     ils_routes = iterated_local_search(deepcopy(instance), deepcopy(random_routes), ls=hybrid_ls, destroy_factor=0.1)
     cost_ils = compute_total_cost(ils_routes, instance["edge_weight"])
@@ -195,7 +195,7 @@ def run_iteration(iter_seed, instance_name, bks, n, k):
     cost_fast_lns_ils = compute_total_cost(fast_lns_ils_routes, instance["edge_weight"])
     elapsed2 = round((time.time() - start) / 60, 4)
     results["Fast LNS + ILS"] = (cost_fast_lns_ils, elapsed2)
-    print_aligned(f"Fast LNS + ILS Solution Iteration: {iter_seed}")
+    print_aligned(f"Fast LNS + ILS Solution Iteration: {iter_seed}")"""
 
     """# Smart LNS
     start = time.time()

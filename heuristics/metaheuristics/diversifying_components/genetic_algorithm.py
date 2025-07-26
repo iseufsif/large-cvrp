@@ -3,9 +3,8 @@ import numpy as np
 from utils.utils import compute_total_cost
 import copy
 import random
-from utils.tsp_solvers_for_GA import tsp_solver_ls, tsp_solver_nn
-from heuristics.construction.random import generate_random_solution
-from heuristics.improvement.ls import hybrid_ls
+from utils.tsp_solvers_for_GA import tsp_solver_nn
+import time
 
 def split(permutation, demand, capacity):
     routes = []
@@ -150,6 +149,8 @@ def diversity(population):
 
 def genetic_algorithm(instance, pop_size, max_no_improv = 100):
 
+    start_time = time.time()
+
     # Initialize the population of individuals
     pop = []
     for i in range(pop_size):
@@ -187,7 +188,15 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
 
     # Algorithm
     while no_improv < max_no_improv: 
+
+        # Check Time Limit (10 hours = 36000 seconds)
+        elapsed_time = time.time() - start_time
+        if elapsed_time > 36000:  
+            print(f"Time Limit of {elapsed_time/3600:.2f} hours reached.")
+            break
+
         new_best_sol_found = False
+
         fitness_quality(pop)
         if it%round(0.1*n) == 0: # tuned
             diversity(pop)
