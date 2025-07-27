@@ -23,17 +23,17 @@ benchmark_instances = ["X-n502-k39.vrp",
                        "X-n561-k42.vrp",
                        "X-n641-k35.vrp",
                        "X-n685-k75.vrp",
+                       "X-n716-k35.vrp",
                        "X-n749-k98.vrp",
                        "X-n801-k40.vrp",
                        "X-n856-k95.vrp",
-                       "X-n916-k207.vrp",
-                       "X-n1001-k43.vrp",]
+                       "X-n916-k207.vrp"]
 
 # ========================= MAIN =========================
 def main():
-    for i in range(0,1):
+    for i in range(0,10):
         # Initialize
-        instance_name = benchmark_instances[8]
+        instance_name = benchmark_instances[i]
         print("\n",instance_name)
         instance = vrplib.read_instance("instances/" + instance_name)
         bks = get_bks(instance_name)
