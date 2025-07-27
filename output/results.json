@@ -3,7 +3,7 @@
         "instance_name": "X-n502-k39.vrp",
         "dimension": 502,
         "depot": [
-            0
+            "E"
         ],
         "avg_route_size": 12.871794871794872,
         "total_benchmark_time": 153.0897007425626,
@@ -394,7 +394,7 @@
         "instance_name": "X-n524-k153.vrp",
         "dimension": 524,
         "depot": [
-            0
+            "R"
         ],
         "avg_route_size": 3.4248366013071894,
         "total_benchmark_time": 118.70571995178858,
@@ -785,7 +785,7 @@
         "instance_name": "X-n561-k42.vrp",
         "dimension": 561,
         "depot": [
-            0
+            "C"
         ],
         "avg_route_size": 13.357142857142858,
         "total_benchmark_time": 109.0305678208669,
@@ -1176,7 +1176,7 @@
         "instance_name": "X-n641-k35.vrp",
         "dimension": 641,
         "depot": [
-            0
+            "E"
         ],
         "avg_route_size": 18.314285714285713,
         "total_benchmark_time": 125.28623335758844,
@@ -1567,7 +1567,7 @@
         "instance_name": "X-n685-k75.vrp",
         "dimension": 685,
         "depot": [
-            0
+            "C"
         ],
         "avg_route_size": 9.133333333333333,
         "total_benchmark_time": 244.82813802957534,
@@ -1958,7 +1958,7 @@
         "instance_name": "X-n749-k98.vrp",
         "dimension": 749,
         "depot": [
-            0
+            "R"
         ],
         "avg_route_size": 7.642857142857143,
         "total_benchmark_time": 336.47078083356223,
@@ -2349,7 +2349,7 @@
         "instance_name": "X-n801-k40.vrp",
         "dimension": 801,
         "depot": [
-            0
+            "E"
         ],
         "avg_route_size": 20.025,
         "total_benchmark_time": 642.1427612940471,
@@ -2740,7 +2740,7 @@
         "instance_name": "X-n856-k95.vrp",
         "dimension": 856,
         "depot": [
-            0
+            "C"
         ],
         "avg_route_size": 9.010526315789473,
         "total_benchmark_time": 877.9003738164902,
@@ -3131,7 +3131,7 @@
         "instance_name": "X-n916-k207.vrp",
         "dimension": 916,
         "depot": [
-            0
+            "E"
         ],
         "avg_route_size": 4.42512077294686,
         "total_benchmark_time": 1117.1120461940766,
