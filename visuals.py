@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mpl
+import seaborn as sns
 
 # --- Set Up ---
 with open("output/results.json", "r") as f:
@@ -29,14 +30,14 @@ else:
 
 
 # why exclude?
-heuristics_names = [h for h in data[0]["heuristics"].keys() if h.lower() not in ["random", "sa","ls+sa+ls", "tabu", "fast lns", "ga"]]  # Exclude 'Random' and 'Smart LNS' heuristics
+heuristics_names = [h for h in data[0]["heuristics"].keys() if h.lower() in ["sa", "tabu", "fast lns", "ga"]]  # Exclude 'Random' and 'Smart LNS' heuristics
 
 # --- Compute global min and max for y-axis (GAP), excluding 'Random' and 'Smart LNS' heuristics ---
 all_gaps = []
 for entry in data:
     heuristics = entry.get("heuristics", {})
     for h_name, h in heuristics.items():
-        if h_name.lower() not in ["random","sa","ls+sa+ls", "tabu", "fast lns", "ga"]:
+        if h_name.lower() in ["sa","tabu", "fast lns", "ga"]:
             all_gaps.extend(h.get("gaps", []))
 if all_gaps:
     global_min_gap = min(all_gaps)
@@ -82,21 +83,28 @@ for heuristic in heuristics_names:
     box_colors = [cmap(norm(d)) for d in sorted_dims]
 
     # Plot with sorted values, reduce boxplot distance and figure width
-    plt.figure(figsize=(max(6, len(sorted_labels)*0.8), 6))
-    box = plt.boxplot(sorted_costs, patch_artist=True, tick_labels=sorted_labels, showmeans=False, widths=0.7)
+    fig, ax = plt.subplots(figsize=(max(6, len(sorted_labels)*0.8), 6))
+    box = ax.boxplot(sorted_costs, patch_artist=True, tick_labels=['']*len(sorted_labels), showmeans=False, widths=0.7)
     for patch, color in zip(box['boxes'], box_colors):
         patch.set_facecolor(color)
     # Make median line thicker and black
     for median in box['medians']:
         median.set_color('black')
         median.set_linewidth(2.5)
-    plt.ylabel("GAP")
-    plt.xlabel("Number of Nodes")
-    plt.title(f"GAP distribution for {heuristic}")
-    plt.xticks(rotation=45, ha='right')
+    ax.set_ylabel("GAP")
+    ax.set_xlabel("Number of Nodes")
+    ax.set_title(f"GAP distribution for {heuristic}")
+    # Remove x-tick labels, keep ticks
+    ax.set_xticks(range(1, len(sorted_labels)+1))
+    ax.set_xticklabels(['']*len(sorted_labels))
+    # Add colorbar legend for number of nodes
+    sm = mpl.cm.ScalarMappable(cmap=cmap, norm=mpl.colors.Normalize(vmin=min(sorted_dims), vmax=max(sorted_dims)))
+    sm.set_array([])
+    cbar = plt.colorbar(sm, ax=ax, pad=0.02)
+    cbar.set_label('Number of Nodes')
     # Add a small margin above the global max to ensure all boxplots are fully visible
     y_margin = (global_max_gap - global_min_gap) * 0.01 if global_max_gap > global_min_gap else 1
-    plt.ylim(global_min_gap - y_margin, global_max_gap + y_margin)
+    ax.set_ylim(global_min_gap - y_margin, global_max_gap + y_margin)
     plt.tight_layout()
     plt.show()
 
@@ -121,7 +129,7 @@ for heuristic in heuristics_names:
     import matplotlib
     color_palette = matplotlib.colormaps.get_cmap('Reds')
     if len(deposit_keys) > 1:
-        color_indices = np.linspace(0.3, 0.85, len(deposit_keys))  # avoid too light/dark extremes
+        color_indices = np.linspace(0.2, 0.9, len(deposit_keys))  # avoid too light/dark extremes
     else:
         color_indices = [0.6]
     box_colors = [color_palette(idx) for idx in color_indices]
@@ -188,6 +196,18 @@ for heuristic in heuristics_names:
     plt.show()
 
 # --- Boxplot of times for each heuristic, grouped by dimension (as before) ---
+all_times_global = []
+for entry in data:
+    heuristics = entry.get("heuristics", {})
+    for h_name, h in heuristics.items():
+        if h_name.lower() in ["sa","tabu", "fast lns", "ga"]:
+            all_times_global.extend(h.get("times", []))
+if all_times_global:
+    global_min_time = min(all_times_global)
+    global_max_time = max(all_times_global)
+else:
+    global_min_time = 0
+    global_max_time = 1
 for heuristic in heuristics_names:
     times_per_instance = []
     instance_labels = []
@@ -223,28 +243,20 @@ for heuristic in heuristics_names:
     norm = mpl.colors.Normalize(vmin=min(sorted_dims), vmax=max(sorted_dims))
     box_colors = [cmap(norm(d)) for d in sorted_dims]
 
-    # Compute global min and max for y-axis (TIMES)
-    all_times = [t for sublist in sorted_times for t in sublist]
-    if all_times:
-        global_min_time = min(all_times)
-        global_max_time = max(all_times)
-    else:
-        global_min_time = 0
-        global_max_time = 1
-
-    plt.figure(figsize=(max(6, len(sorted_labels)*0.8), 6))
-    box = plt.boxplot(sorted_times, patch_artist=True, tick_labels=sorted_labels, showmeans=False, widths=0.7)
+    fig, ax = plt.subplots(figsize=(max(6, len(sorted_labels)*0.8), 6))
+    box = ax.boxplot(sorted_times, patch_artist=True, tick_labels=sorted_labels, showmeans=False, widths=0.7)
     for patch, color in zip(box['boxes'], box_colors):
         patch.set_facecolor(color)
     for median in box['medians']:
         median.set_color('black')
         median.set_linewidth(2.5)
-    plt.ylabel("Time (s)")
-    plt.xlabel("Number of Nodes")
-    plt.title(f"Time distribution for {heuristic}")
-    plt.xticks(rotation=45, ha='right')
+    ax.set_ylabel("Time (s)")
+    ax.set_xlabel("Number of Nodes")
+    #ax.set_title(f"Time distribution for {heuristic}")
+    ax.set_xticks(range(1, len(sorted_labels)+1))
+    ax.set_xticklabels(sorted_labels, rotation=45, ha='right')
     y_margin = (global_max_time - global_min_time) * 0.01 if global_max_time > global_min_time else 1
-    plt.ylim(global_min_time - y_margin, global_max_time + y_margin)
+    ax.set_ylim(global_min_time - y_margin, global_max_time + y_margin)
     plt.tight_layout()
     plt.show()
 
@@ -272,15 +284,6 @@ for heuristic in heuristics_names:
     else:
         color_indices = [0.6]
     box_colors = [color_palette(idx) for idx in color_indices]
-
-    # Compute global min and max for y-axis (TIMES)
-    all_times = [t for sublist in data_for_plot for t in sublist]
-    if all_times:
-        global_min_time = min(all_times)
-        global_max_time = max(all_times)
-    else:
-        global_min_time = 0
-        global_max_time = 1
 
     plt.figure(figsize=(max(8, len(labels)*1.2), 6))
     box = plt.boxplot(data_for_plot, patch_artist=True, tick_labels=labels, showmeans=False)
@@ -321,15 +324,6 @@ for heuristic in heuristics_names:
     norm = mpl.colors.Normalize(vmin=0, vmax=2)
     box_colors = [cmap(norm(i)) for i in range(3)]
 
-    # Compute global min and max for y-axis (TIMES)
-    all_times = [t for sublist in data_for_plot for t in sublist]
-    if all_times:
-        global_min_time = min(all_times)
-        global_max_time = max(all_times)
-    else:
-        global_min_time = 0
-        global_max_time = 1
-
     plt.figure(figsize=(8, 6))
     box = plt.boxplot(data_for_plot, patch_artist=True, tick_labels=labels, showmeans=False)
     for patch, color in zip(box['boxes'], box_colors):
@@ -339,9 +333,62 @@ for heuristic in heuristics_names:
         median.set_linewidth(2.5)
     plt.ylabel("Time (s)")
     plt.xlabel("avg_route_size interval")
-    plt.title(f"Time distribution for {heuristic} by avg_route_size interval")
+    #plt.title(f"Time distribution for {heuristic} by avg_route_size interval")
     plt.xticks(rotation=45, ha='right')
     y_margin = (global_max_time - global_min_time) * 0.01 if global_max_time > global_min_time else 1
     plt.ylim(global_min_time-y_margin, global_max_time + y_margin)
     plt.tight_layout()
     plt.show()
+
+# --- Create summary table: instances x metaheuristics, with mean GAP and mean TIME ---
+# Select metaheuristics (heuristics_names)
+metaheuristics = heuristics_names
+
+# Prepare table data
+rows = []
+instance_names = [entry.get("instance_name", f"instance_{i}") for i, entry in enumerate(data)]
+
+for idx, entry in enumerate(data):
+    row = {}
+    for heuristic in metaheuristics:
+        h = entry.get("heuristics", {}).get(heuristic, {})
+        gaps = h.get("gaps", [])
+        times = h.get("times", [])
+        mean_gap = round(np.mean(gaps), 2) if gaps else None
+        mean_time = round(np.mean(times), 2) if times else None
+        row[(heuristic, "GAP")] = mean_gap
+        row[(heuristic, "TIME")] = mean_time
+    rows.append(row)
+
+# Build MultiIndex columns
+columns = pd.MultiIndex.from_tuples(row.keys())
+df = pd.DataFrame(rows, index=instance_names, columns=columns)
+
+print("\nSummary Table:")
+print(df)
+
+# Export the summary table to Excel
+excel_path = 'summary_table.xlsx'
+df.to_excel(excel_path)
+print(f"Table exported on: {excel_path}")
+
+# --- Plot the summary table as a heatmap ---
+# Plot GAP values
+plt.figure(figsize=(2+len(metaheuristics)*2, 1+len(instance_names)*0.5))
+gap_df = df.xs('GAP', axis=1, level=1)
+sns.heatmap(gap_df, annot=True, fmt='.2f', cmap='YlGnBu', cbar_kws={'label': 'Mean GAP'})
+plt.title('Mean GAP per Instance and Metaheuristic')
+plt.ylabel('Instance')
+plt.xlabel('Metaheuristic')
+plt.tight_layout()
+plt.show()
+
+# Plot TIME values
+plt.figure(figsize=(2+len(metaheuristics)*2, 1+len(instance_names)*0.5))
+time_df = df.xs('TIME', axis=1, level=1)
+sns.heatmap(time_df, annot=True, fmt='.2f', cmap='OrRd', cbar_kws={'label': 'Mean TIME (s)'})
+plt.title('Mean TIME per Instance and Metaheuristic')
+plt.ylabel('Instance')
+plt.xlabel('Metaheuristic')
+plt.tight_layout()
+plt.show()

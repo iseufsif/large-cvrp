@@ -118,7 +118,7 @@ def calculate_combined_fitness(population, n_elite):
     for individual in population:
         f_quality = individual["rank_quality"]
         f_div = individual["rank_div"]
-        individual["fitness_combined"] = f_div + (1 - n_elite / pop_size) * f_quality
+        individual["fitness_combined"] = f_quality + (1 - n_elite / pop_size) * f_div
     
 def calculate_probabilities(population):
     # Rank based selection
