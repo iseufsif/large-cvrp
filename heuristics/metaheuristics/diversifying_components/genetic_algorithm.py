@@ -4,7 +4,7 @@ from utils.utils import compute_total_cost
 import copy
 import random
 from utils.tsp_solvers_for_GA import tsp_solver_nn
-import time
+
 
 def split(permutation, demand, capacity):
     routes = []
@@ -22,7 +22,6 @@ def split(permutation, demand, capacity):
         routes.append(route)
     return routes
     
-
 def parent_selection(population):
     # Rank based selecton
     pop_sorted = sorted(population, key=lambda x: x["fitness_combined"])
@@ -36,16 +35,6 @@ def parent_selection(population):
             break
     parent = copy.copy(individual["cromosoms"])
     return parent
-
-def uniform_crossover(parent_1, parent_2, p = 0.95):
-    # Apply uniform crossover:
-    child = copy.deepcopy(parent_1)
-    for i in range(len(parent_1)):
-        if np.random.random() < p:
-            child[i] = parent_1[i]
-        else:
-            child[i] = parent_2[i]
-    return child
 
 def order_crossover(parent1, parent2):
     # Apply order crossover
@@ -134,9 +123,6 @@ def calculate_probabilities(population):
         individual["range"] = [current, current + individual["p"]]
         current += individual["p"]
 
-def is_duplicate(child, population):
-    return any(child == ind["cromosoms"] for ind in population)
-
 def diversity(population):
     for individual in population:
         div = 0
@@ -148,8 +134,6 @@ def diversity(population):
         individual["div"] = div / (len(population) - 1)
 
 def genetic_algorithm(instance, pop_size, max_no_improv = 100):
-
-    start_time = time.time()
 
     # Initialize the population of individuals
     pop = []
@@ -163,8 +147,6 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
         "range": [0, 1],
         "feasible": True}
         sol = split(individual["cromosoms"], instance["demand"], instance["capacity"])
-        #sol = hybrid_ls(instance, sol, 50) # Educate initial random population with hybrid ls
-        #individual["cromosoms"] = [node for route in sol for node in route]
         individual["Z"] = compute_total_cost(sol, instance["edge_weight"])
         individual["feasible"] = capacity_check(sol, instance)
         pop.append(individual)
@@ -189,12 +171,6 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
     # Algorithm
     while no_improv < max_no_improv: 
 
-        # Check Time Limit (10 hours = 36000 seconds)
-        elapsed_time = time.time() - start_time
-        if elapsed_time > 36000:  
-            print(f"Time Limit of {elapsed_time/3600:.2f} hours reached.")
-            break
-
         new_best_sol_found = False
 
         fitness_quality(pop)
@@ -202,7 +178,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
             diversity(pop)
         calculate_combined_fitness(pop, n_elite)
         calculate_probabilities(pop)
-        #print(f"\nIteration {it}")
+    
         for _ in range(gen_size):
             # Parent Selection
             parent_1 = parent_selection(pop)
@@ -216,7 +192,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
             if np.random.random() < p_mut:
                 mutation(child)
 
-            # Check if the child is a clone ()
+            # Check if the child is a clone
             seen = set(tuple(ind["cromosoms"]) for ind in pop)
             if tuple(child) in seen:
                 continue
@@ -234,12 +210,10 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
             # Check the capacity constraint
             feasibility = capacity_check(new_routes, instance)
             if feasibility is True:
-                #print("Cost New Feasible Solution=", total_length)
                 if total_length < best_cost:
                     best_cost = total_length
                     best_sol = new_routes
                     new_best_sol_found = True
-                    #print(f"In Iteration {it}: Improved to cost {best_cost:.2f}")
             else:
                 total_length = penalty*total_length
             
@@ -262,7 +236,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
         else:
             no_improv += 1
 
-        # After 250 iteration with no improvement, we replace some individuals with random solutions
+        # After 2.5*n iterations with no improvement, we replace some individuals with random solutions
         if no_improv > (2.5*n) and no_improv%round(0.25*n) == 0: # Tuned
             num_replace = int(pop_size * 0.2)
             new_individuals = []
@@ -280,7 +254,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
                 ind["feasible"] = capacity_check(sol, instance)
                 new_individuals.append(ind)
             pop = pop[:-num_replace] + new_individuals
-        # print(no_improv)
+
         it +=1
 
     return best_sol

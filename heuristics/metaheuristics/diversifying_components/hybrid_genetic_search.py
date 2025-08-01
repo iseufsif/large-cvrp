@@ -1,10 +1,8 @@
-from heuristics.metaheuristics.diversifying_components.genetic_algorithm import is_duplicate,split,fitness_quality, calculate_probabilities, parent_selection, order_crossover,capacity_check, calculate_combined_fitness, diversity
-from utils.tsp_solvers_for_GA import tsp_solver_nn, tsp_solver_ls
+from heuristics.metaheuristics.diversifying_components.genetic_algorithm import split,fitness_quality, calculate_probabilities, parent_selection, order_crossover,capacity_check, calculate_combined_fitness, diversity
+from utils.tsp_solvers_for_GA import tsp_solver_nn
 from heuristics.improvement.ls import hybrid_ls
 import numpy as np
 from utils.utils import compute_total_cost
-import random
-import math
 
 def HGS(instance, pop_size, max_no_improv = 100):
     # Initialize the population of individuals
@@ -32,8 +30,7 @@ def HGS(instance, pop_size, max_no_improv = 100):
     calculate_probabilities(pop)
     
     gen_size = 25
-    penalty = 3
-    ref_ratio = 0.2
+    penalty = 10
     no_improv = 0
     it = 1
     it_ls = 0
@@ -49,15 +46,21 @@ def HGS(instance, pop_size, max_no_improv = 100):
         calculate_probabilities(pop)
         #print(f"\nIteration {it}")
         for _ in range(gen_size):
+
             # Parent Selection
             parent_1 = parent_selection(pop)
             parent_2 = parent_selection(pop)
     
             # Reprodcution
             child = order_crossover(parent_1, parent_2)
-            if is_duplicate(child, pop):
+
+            #Check if the child is a clone
+            seen = set(tuple(ind["cromosoms"]) for ind in pop)
+            if tuple(child) in seen:
                 continue
+
             routes = split(child, instance["demand"], instance["capacity"])
+
             # Educate child using Nearest Neighbor and Local Search
             new_routes = [] 
             total_length = 0
@@ -67,11 +70,12 @@ def HGS(instance, pop_size, max_no_improv = 100):
                 total_length += route_length  
 
             if  total_length > 1.5 *best_cost:
-                continue  # skip LS on bad offspring
+                continue  # skip LS on bad offsprings
             else:
                 child_ls = hybrid_ls(instance, new_routes, min(10, 3 + it_ls))
             
             total_length = compute_total_cost(child_ls, instance["edge_weight"])
+
             # Check the capacity constraint
             feasibility = capacity_check(child_ls, instance)
             if feasibility is True:
@@ -93,33 +97,12 @@ def HGS(instance, pop_size, max_no_improv = 100):
 
         # Replacement
         pop = sorted(pop, key=lambda ind: ind["Z"])[:pop_size+gen_size]
-       
-        # Population Management
-        num_infeasible = 0
-        num_feasible = 0
-        for sol in pop:
-            if sol["feasible"] is True:
-                num_feasible += 1
-            else:
-                num_infeasible += 1 
-
-        if num_feasible == 0:
-            penalty = penalty*2
-            continue
-
-        ratio = num_infeasible/num_feasible
-
-        if ratio > ref_ratio: # We want to have 20% of infeasible solutions in our population
-            penalty = penalty*1.1
-        else:
-            penalty = penalty*0.9
         
         # Improvement Management
         if new_best_sol_found is True:
             no_improv = 0
         else:
             no_improv += 1
-        print(no_improv)
         it +=1
         if it%50 == 0:
             it_ls += 1 # As the algorithm proceeds we increase the iterations of LS

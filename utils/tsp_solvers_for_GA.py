@@ -58,7 +58,7 @@ def two_opt_move(tour, i, j): # Function to define the new tour with 2-opt given
         new_tour[i] = tour[j]
         return new_tour
 
-def evaluate_TSP_sol(route, edge_weight) -> int:
+def evaluate_TSP_sol(route, edge_weight):
     total_cost = 0
     prev = 0  # start at depot (index 0)
     for cust in route:
