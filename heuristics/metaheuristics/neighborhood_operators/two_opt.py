@@ -4,6 +4,13 @@ from utils.utils import compute_route_cost
 import random
 
 def two_opt_move(routes, route_idx, edge_weight):
+    """
+    Performs intra-route two-opt to a route of a VRP solution
+
+    Return:
+        List[List[int]]: modified VRP solution
+        Float: delta cost from the previous to the new solution
+    """
     if not routes or len(routes[route_idx]) < 4:
         return routes, 0  # too short to optimize
 

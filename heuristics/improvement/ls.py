@@ -5,6 +5,13 @@ from heuristics.metaheuristics.neighborhood_operators.two_opt import two_opt_mov
 from heuristics.metaheuristics.neighborhood_operators.exchange import exchange_move
 
 def ls_with_2opt(instance, routes, it=100):
+    """
+    Performs local search solve the VRP problem
+    Neighborhood operator: Two-Opt
+
+    Return:
+        List[List[int]]: best found solution to VRP
+    """
     current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
     
@@ -25,6 +32,13 @@ def ls_with_2opt(instance, routes, it=100):
     return current_sol
 
 def ls_with_swaps(instance, routes, it=100):
+    """
+    Performs local search solve the VRP problem
+    Neighborhood operator: Exchange
+
+    Return:
+        List[List[int]]: best found solution to VRP
+    """
     current_sol = copy.deepcopy(routes)
     current_length = compute_total_cost(current_sol, instance["edge_weight"])
     
@@ -45,6 +59,13 @@ def ls_with_swaps(instance, routes, it=100):
     return current_sol
 
 def hybrid_ls(instance, routes, it=100):
+    """
+    Performs local search solve the VRP problem
+    Neighborhood operator: combined use of Exchange and Two-Opt
+
+    Return:
+        List[List[int]]: best found solution to VRP
+    """
     ls_inter_route = ls_with_swaps(instance, routes, it)
     ls_intra_route = ls_with_2opt(instance, ls_inter_route, it)
     return ls_intra_route

@@ -5,7 +5,12 @@ import numpy as np
 from utils.utils import compute_total_cost
 
 def HGS(instance, pop_size, max_no_improv = 100):
-    # Initialize the population of individuals
+    """
+    Performs simplified hybrid genetic search for VRP
+
+    Return:
+        List[List[int]]: best found solution for the VRP problem
+    """
     pop = [] 
     for i in range(pop_size):
         individual = {
@@ -22,10 +27,9 @@ def HGS(instance, pop_size, max_no_improv = 100):
         individual["feasible"] = capacity_check(sol, instance)
         pop.append(individual)
 
-    n_elite = 4
-
     fitness_quality(pop)
     diversity(pop)
+    n_elite = 4
     calculate_combined_fitness(pop, n_elite)
     calculate_probabilities(pop)
     
@@ -35,12 +39,13 @@ def HGS(instance, pop_size, max_no_improv = 100):
     it = 1
     it_ls = 0
     best_cost = min(ind["Z"] for ind in pop)
+    n = instance["dimension"]
 
     # Algorithm
     while no_improv < max_no_improv: 
         new_best_sol_found = False
         fitness_quality(pop)
-        if it%5 == 0:
+        if it%(0.1*n) == 0:
             diversity(pop)
         calculate_combined_fitness(pop, n_elite)
         calculate_probabilities(pop)

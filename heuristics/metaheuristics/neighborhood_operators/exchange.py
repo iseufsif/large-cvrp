@@ -3,6 +3,13 @@ import copy
 from utils.utils import compute_route_cost
 
 def exchange_move(routes, route_1_idx, route_2_idx, instance):
+    """
+    Swaps the position of two random nodes among two routes of a VRP solution
+
+    Return:
+        List[List[int]]: modified VRP solution
+        Float: delta cost from the previous to the new solution
+    """
     if route_1_idx == route_2_idx:
         return routes, 0  # skip intra-route swaps
 

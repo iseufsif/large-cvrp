@@ -7,6 +7,13 @@ from utils.tsp_solvers_for_GA import tsp_solver_nn
 
 
 def split(permutation, demand, capacity):
+    """
+    Decoding function for the offsprings.
+    Split the string of chromosomes into different routes.
+
+    Return:
+        List[List[int]]: solution of the VRP problem
+    """
     routes = []
     route = []
     load = 0
@@ -21,9 +28,15 @@ def split(permutation, demand, capacity):
     if route:
         routes.append(route)
     return routes
-    
+
+
 def parent_selection(population):
-    # Rank based selecton
+    """
+    Rank-based selection of parents
+
+    Return: 
+        List[int]: selected parent for reproduction
+    """
     pop_sorted = sorted(population, key=lambda x: x["fitness_combined"])
 
     for rank, individual in enumerate(pop_sorted):
@@ -36,8 +49,14 @@ def parent_selection(population):
     parent = copy.copy(individual["cromosoms"])
     return parent
 
+
 def order_crossover(parent1, parent2):
-    # Apply order crossover
+    """
+    Perform order crossover to generate an offspring.
+
+    Return:
+        List[int]: generated offspring (child)
+    """
     size = len(parent1)
 
     start, end = sorted(random.sample(range(size), 2))
@@ -59,7 +78,13 @@ def order_crossover(parent1, parent2):
 
 
 def mutation(child, p = 0.2):
-    # Apply Mutation by swapping a node with another random node 
+    """
+    Perform mutation by randomly swapping pairs of nodes.
+
+    Return:
+        List[int]: mutated offspring (child)
+    """
+
     n = len(child)
     for i in range(n):
         if np.random.random() < p:
@@ -71,7 +96,14 @@ def mutation(child, p = 0.2):
 
     return child
 
+
 def capacity_check(routes, instance):
+    """
+    Checks feasibility of the solution.
+
+    Return:
+        bool: true if feasible, false viceversa
+    """
     num_vehicles = len(routes)
     demands = instance["demand"]
     capacity = instance["capacity"]
@@ -82,23 +114,45 @@ def capacity_check(routes, instance):
             loads[route] += demands[node]
             if loads[route] > capacity:
                 return False
-    #print("Feasible Solution")
     return True
 
+
 def fitness_quality(population):
+    """
+    Computes fitness quality of individuals in the population.
+    """
     mu = sum(individual["Z"] for individual in population)/len(population)
     for individual in population:
-        individual["f"] = 2*mu - individual["Z"]
+        individual["Q"] = 2*mu - individual["Z"]
+
+
+def diversity(population):
+    """
+    Computes fitness diversity of an individuals in the population.
+    """
+    for individual in population:
+        div = 0
+        for other in population:
+            if individual == other:
+                continue
+            diff = sum([1 for a, b in zip(individual["cromosoms"], other["cromosoms"]) if a != b])
+            div += diff / len(individual["cromosoms"])
+        individual["div"] = div / (len(population) - 1)
+
 
 def calculate_combined_fitness(population, n_elite):
+    """
+    Computes the combined fitness of individuals in the population
+    considering their quality and diversity rank
+    """
     pop_size = len(population)
     
-    # Rank for quality (lower Z is better)
-    sorted_by_quality = sorted(population, key=lambda x: x["Z"])
+    # Rank for quality (higher Q is better)
+    sorted_by_quality = sorted(population, key=lambda x: -x["Q"])
     for rank, individual in enumerate(sorted_by_quality):
         individual["rank_quality"] = rank
     
-    # Rank for diversity (higher div is better → invert sort)
+    # Rank for diversity (higher div is better)
     sorted_by_div = sorted(population, key=lambda x: -x["div"])
     for rank, individual in enumerate(sorted_by_div):
         individual["rank_div"] = rank
@@ -108,9 +162,13 @@ def calculate_combined_fitness(population, n_elite):
         f_quality = individual["rank_quality"]
         f_div = individual["rank_div"]
         individual["fitness_combined"] = f_quality + (1 - n_elite / pop_size) * f_div
-    
+
+
 def calculate_probabilities(population):
-    # Rank based selection
+    """
+    Computes the probability for individuals to be chosen as parents
+    according to a rank-based selection
+    """
     E_max = 1.5 #tuned
     E_min = 2 - E_max
     pop_size = len(population)
@@ -123,17 +181,15 @@ def calculate_probabilities(population):
         individual["range"] = [current, current + individual["p"]]
         current += individual["p"]
 
-def diversity(population):
-    for individual in population:
-        div = 0
-        for other in population:
-            if individual == other:
-                continue
-            diff = sum([1 for a, b in zip(individual["cromosoms"], other["cromosoms"]) if a != b])
-            div += diff / len(individual["cromosoms"])
-        individual["div"] = div / (len(population) - 1)
+
 
 def genetic_algorithm(instance, pop_size, max_no_improv = 100):
+    """
+    Performs the genetic algorithm for VRP
+
+    Return:
+        List[List[int]]: best found solution for the VRP problem
+    """
 
     # Initialize the population of individuals
     pop = []
@@ -141,7 +197,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
         individual = {
         "cromosoms": np.random.permutation(list(range(1, instance["dimension"]))).tolist(),
         "Z": 0,
-        "f": 0,
+        "Q": 0,
         "div": 0,
         "p": 0,
         "range": [0, 1],
@@ -150,10 +206,10 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
         individual["Z"] = compute_total_cost(sol, instance["edge_weight"])
         individual["feasible"] = capacity_check(sol, instance)
         pop.append(individual)
-    
-    n_elite = 4
+
     fitness_quality(pop)
     diversity(pop)
+    n_elite = 4 #from literature
     calculate_combined_fitness(pop, n_elite)
     calculate_probabilities(pop)
 
@@ -174,6 +230,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
         new_best_sol_found = False
 
         fitness_quality(pop)
+        # Diversity computed every 0.1*n iterations to reduce runtime
         if it%round(0.1*n) == 0: # tuned
             diversity(pop)
         calculate_combined_fitness(pop, n_elite)
@@ -218,9 +275,9 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
                 total_length = penalty*total_length
             
             # Update population
-            pop.append({"cromosoms": [node for route in new_routes for node in route], # Encoding of the child educated with nearest neighbor
+            pop.append({"cromosoms": [node for route in new_routes for node in route], # Encoding of the child
                         "Z": total_length,
-                        "f":0, 
+                        "Q":0, 
                         "div":0, 
                         "fitness_combined":0, 
                         "p":0, 
@@ -244,7 +301,7 @@ def genetic_algorithm(instance, pop_size, max_no_improv = 100):
                 ind = {
                     "cromosoms": np.random.permutation(list(range(1, instance["dimension"]))).tolist(),
                     "Z": 0,
-                    "f": 0,
+                    "Q": 0,
                     "div": 0,
                     "p": 0,
                     "range": [0, 1],

@@ -6,6 +6,12 @@ from heuristics.metaheuristics.neighborhood_operators.exchange import exchange_m
 
 
 def tabu_search(instance, routes, max_no_improv = 100, size_neighborhood=None, max_length_tabu=None):
+    """
+    Performs Tabu Search for VRP
+
+    Return:
+        List[List[int]]: best found solution for the VRP problem
+    """
     current_sol = copy.deepcopy(routes) # A feasible solution to the minimization problem: x
     current_best_sol = copy.deepcopy(routes) # Initial best solution x*
     current_length = compute_total_cost(current_sol, instance["edge_weight"]) # Initial F(x)   
@@ -30,7 +36,7 @@ def tabu_search(instance, routes, max_no_improv = 100, size_neighborhood=None, m
         best_worse_neighbor = current_sol.copy() 
         to_be_added = None
 
-        # Neighborhood: 30 two-opt moves for random nodes of the current solution
+        # Exploration of the neighborhood
         for iter in range(size_neighborhood):
             route_1_idx = random.randint(0,len(current_sol)-1)
             route_2_idx = random.randint(0,len(current_sol)-1)
@@ -43,20 +49,20 @@ def tabu_search(instance, routes, max_no_improv = 100, size_neighborhood=None, m
                 if neighbor_length >= current_best_length:
                     # If not we calculate the delta with the current solution
                     delta = neighbor_length - current_length 
-                    # If it is the neighbor with the lowest F(x') [and F(x') < F(x*) previously checked] we select it
+                    # If it is the neighbor with the lowest F(x') [and F(x') < F(x*) previously checked], we select it
                     if delta <= best_worse_delta:
                         best_worse_delta = delta
                         best_worse_neighbor = neighbor.copy()
-                        to_be_added = [route_1_idx, route_2_idx] # we will add this move to the tabo list
+                        to_be_added = [route_1_idx, route_2_idx]
 
-                # if we found a new best solution we save it
+                # if best solution found, we save it
                 else: 
                     delta_best = neighbor_length - current_best_length
                     if delta_best < best_delta:
                         best_solution = neighbor.copy()
                         best_delta = delta_best
                         improv = 0
-                        # print(f"In Iteration {k}: Improved to cost {current_best_length + best_delta:.2f}")
+                    
         # Update the tabo list:
         if to_be_added is not None:         
             tabu_list.append(to_be_added) 

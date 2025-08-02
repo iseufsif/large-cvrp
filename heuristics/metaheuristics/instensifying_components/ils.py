@@ -6,6 +6,12 @@ import copy
 import random
 
 def perturb(instance, routes, destroy_factor=0.2):
+    """
+    Applies destroy and repair operators to a given VRP solution
+
+    Return:
+        List[List[int]]: perturbated solution 
+    """
     num_customers = sum(len(r) for r in routes)
     num_remove = int(num_customers * destroy_factor)
 
@@ -16,7 +22,12 @@ def perturb(instance, routes, destroy_factor=0.2):
     return repaired
 
 def iterated_local_search(instance, initial_solution, ls=hybrid_ls, it=100, destroy_factor=0.2): # destroy_factor finetuned
+    """
+    Performs iterated local search to solve the VRP problem
 
+    Return:
+        List[List[int]]: best found solution to VRP
+    """
     current = ls(instance, copy.deepcopy(initial_solution), it)
     current_cost = compute_total_cost(current, instance["edge_weight"])
     best = current

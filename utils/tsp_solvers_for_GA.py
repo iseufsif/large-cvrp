@@ -2,7 +2,13 @@ import random
 import copy
 
 def tsp_solver_nn(route, distances):
-    # Solve TSP with Nearest Neighbor
+    """
+    Solves TSP using Nearest Neighbor
+
+    Return:
+        List[int]: Solution of TSP using NN
+        Int: Total length of the solution
+    """
     if len(route) == 0: # Check for children born with a lower number of vehicles
         return route, 0
     tour = []
@@ -22,6 +28,14 @@ def tsp_solver_nn(route, distances):
     return tour, length
 
 def tsp_solver_ls(route, distances, it = 5):
+    """
+    Solves TSP Local Search
+    Neighborhood Operator: Two_Opt
+
+    Return:
+        List[int]: Solution of TSP using LS
+        Int: Total length of the solution
+    """
     current_sol = route
     current_length = evaluate_TSP_sol(route, distances)
     # Solve TSP with Descent Local Search
@@ -59,6 +73,7 @@ def two_opt_move(tour, i, j): # Function to define the new tour with 2-opt given
         return new_tour
 
 def evaluate_TSP_sol(route, edge_weight):
+    """Compute total length of a given TSP solution"""
     total_cost = 0
     prev = 0  # start at depot (index 0)
     for cust in route:
