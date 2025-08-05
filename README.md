@@ -1,10 +1,10 @@
 # Large-Scale CVRP Solver with Metaheuristics
 
-📦 **Course**: Computational Logistics (@TUM)
+📦 **Course**: Computational Logistics (@TUM)  
 🐍 **Python**: 3.13  
 📁 **Author**: Alberto Adro, Lucca Altendeitering
 
----
+<br/>
 
 # 🚚 Large-Scale CVRP Solver using Metaheuristics
 
@@ -20,7 +20,7 @@ Implemented algorithms include:
 
 You can evaluate algorithms on individual instances, benchmark multiple methods in parallel across large datasets, and visualize the results interactively with statistical breakdowns.
 
----
+<br/>
 
 ## 🛠️ Setup and Installation
 
@@ -46,7 +46,7 @@ pip install -r requirements.txt
 
 This will install all dependencies for running heuristics, benchmarking, and plotting results. Make sure you are using **Python 3.13** or adjust your environment accordingly.
 
----
+<br/>
 
 ## ▶️ Run Single Instance (`main.py`)
 
@@ -70,7 +70,7 @@ python main.py
 
 You may customize the instance name, number of iterations, and methods within the file. All results are tracked in a local `history` list, and the best solution is plotted automatically.
 
----
+<br/>
 
 ## 📊 Run Benchmark (`benchmark.py`)
 
@@ -104,7 +104,7 @@ python benchmark.py
 
 You can edit the number of repetitions (`n_iter`) and the selected heuristics inside the script. This determines the number of runs for each instance to account for randomness in our evaluation. The benchmark is designed to be modular and easily extended with new algorithm variants.
 
----
+<br/>
 
 ## 📈 Visualize Results (`visuals.py`)
 
@@ -132,7 +132,9 @@ The visuals provide insight into:
 - How depot or route structure influences performance
 - Runtime vs. solution quality trade-offs
 
+<br/>
 ---
+<br/>
 
 This project provides a complete experimentation pipeline for solving and analyzing large-scale CVRP instances using advanced metaheuristics. You are encouraged to customize the pipeline for additional heuristics, parameter tuning, or new benchmarking strategies.
 
