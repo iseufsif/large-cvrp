@@ -1,3 +1,5 @@
-matplotlib==3.10.3
-numpy==2.3.1
+matplotlib==3.10.5
+numpy==2.3.2
+pandas==2.3.1
+seaborn==0.13.2
 vrplib==1.5.1
