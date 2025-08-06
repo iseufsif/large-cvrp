@@ -4,6 +4,12 @@ import random
 
 # greedy repair is the cheapest feasible insertion
 def greedy_repair(instance, solution, removed_customers):
+    """
+    Performs greedy insertion to repair a VRP solution
+
+    Return:
+    List[List[int]]: repaired VRP solution
+    """
     solution = copy.deepcopy(solution)
     inserted_customers = set()
 
@@ -38,7 +44,6 @@ def greedy_repair(instance, solution, removed_customers):
             solution[best_route_idx].insert(best_position, cust)
             inserted_customers.add(cust)
         else:
-            # print(f"⚠️ [greedy_repair] Forcing fallback route for customer {cust}")
             solution.append([cust])
             inserted_customers.add(cust)
 
@@ -50,18 +55,24 @@ def greedy_repair(instance, solution, removed_customers):
     extra   = visited - all_customers
 
     if missing or extra:
-        print("📋 Final inserted_customers:", sorted(inserted_customers))
-        print("📋 Final visited customers:", sorted(visited))
-        print("📋 Expected customers     :", sorted(all_customers))
+        print("Final inserted_customers:", sorted(inserted_customers))
+        print("Final visited customers:", sorted(visited))
+        print("Expected customers     :", sorted(all_customers))
         if missing:
-            print("❌ Still missing customers:", missing)
+            print("Still missing customers:", missing)
         if extra:
-            print("❌ Unexpected extra customers:", extra)
-        raise RuntimeError("❌ [greedy_repair] Final customer mismatch after repair")
+            print("Unexpected extra customers:", extra)
+        raise RuntimeError("[greedy_repair] Final customer mismatch after repair")
 
     return solution
 
 def regret_repair(instance, solution, removed_customers, k=3):
+    """
+    Performs regret K insertion to repair a VRP solution
+
+    Return:
+    List[List[int]]: repaired VRP solution
+    """
     while removed_customers:
         solution = copy.deepcopy(solution)
         regret_list = []

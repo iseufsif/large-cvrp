@@ -2,6 +2,13 @@ import random
 from utils.utils import compute_total_cost
 
 def random_removal(solution, num_remove):
+    """
+    Randomly selects and removes #num_remove nodes from a VRP solution
+
+    Return:
+    List[List[int]]: destroyed VRP solution
+    List[int]: removed nodes
+    """
     # Create a set of all unique visited customers
     visited_customers = sorted(set(cust for route in solution for cust in route))
 
@@ -29,6 +36,13 @@ def random_removal(solution, num_remove):
 
 
 def worst_removal(instance, solution, num_remove):
+    """
+    Selects the #num_remove worst (most expensive) nodes and removes them from a route
+
+    Return:
+    List[List[int]]: destroyed VRP solution
+    List[int]: removed nodes
+    """
     # Save all customers in a flat list
     flat_customers = [cust for route in solution for cust in route]
 

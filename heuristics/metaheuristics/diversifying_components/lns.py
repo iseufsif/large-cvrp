@@ -4,6 +4,16 @@ from heuristics.metaheuristics.neighborhood_operators.repair import greedy_repai
 
 
 def fast_lns(instance, routes, min_iter=250, destroy_frac=0.1): # destroy_frac finetuned
+    """
+    Performs Fast Large Neighborhood Search for VRP
+
+    Fast refers to the adopted destroy and repair operators:
+    - Destroy Operator: random removal
+    - Repair Operator: greedy repair
+
+    Return:
+        List[List[int]]: best found solution for the VRP problem
+    """
     current_solution = routes
     best_solution = current_solution
     best_cost = compute_total_cost(current_solution, instance["edge_weight"])
@@ -27,6 +37,16 @@ def fast_lns(instance, routes, min_iter=250, destroy_frac=0.1): # destroy_frac f
     return best_solution
 
 def smart_lns(instance, routes, min_iter=250, destroy_frac=0.1): # destroy_frac finetuned
+    """
+    Performs Smart Large Neighborhood Search for VRP
+    
+    Smart refers to the adopted destroy and repair operators:
+    - Destroy Operator: worst removal
+    - Repair Operator: regret repair
+
+    Return:
+        List[List[int]]: best found solution for the VRP problem
+    """
     current_solution = routes
     best_solution = current_solution
     best_cost = compute_total_cost(current_solution, instance["edge_weight"])
