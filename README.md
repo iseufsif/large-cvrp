@@ -138,6 +138,16 @@ The visuals provide insight into:
 
 This project provides a complete experimentation pipeline for solving and analyzing large-scale CVRP instances using advanced metaheuristics. You are encouraged to customize the pipeline for additional heuristics, parameter tuning, or new benchmarking strategies.
 
+<br/>
+
+## 📚 References
+
+Uchoa, E., Pecin, D., Pessoa, A., Poggi, M., Vidal, T., & Subramanian, A. (2017). New benchmark instances for the Capacitated Vehicle Routing Problem. European Journal of Operational Research, 257(3), 845–858. https://doi.org/10.1016/j.ejor.2016.08.012
+
+Subramanian, A., Uchoa, E., & Ochi, L.S. (2013). A hybrid algorithm for a class of vehicle routing problems. Computers & Operations Research, 40(10), 2519–2531. https://doi.org/10.1016/j.cor.2013.01.013
+
+Vidal, T. (2022). Hybrid genetic search for the CVRP: Open-source implementation and SWAP* neighborhood. Computers & Operations Research, 140, 105643. https://doi.org/10.1016/j.cor.2021.105643
+
 
 
 
