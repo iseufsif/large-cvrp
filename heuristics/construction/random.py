@@ -2,6 +2,13 @@ import vrplib
 import random
 
 def generate_random_solution(instance_name):
+    """
+    Generates a random solution for the VRP
+
+    Return:
+        List[List[int]]: random solution for VRP
+        Dict[str, Any]: instance subject to analysis
+    """
     # load instance
     instance = vrplib.read_instance("instances/" + instance_name)
 

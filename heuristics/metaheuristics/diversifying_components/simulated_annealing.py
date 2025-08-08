@@ -24,7 +24,8 @@ def simulated_annealing(instance, routes, min_no_improvement=250, alpha=0.1, bet
     temperature = alpha * current_length
     cooling = beta
 
-    max_no_improvement = min_no_improvement
+    n = instance["dimension"]
+    max_no_improvement = max(min_no_improvement, 0.5*n)
 
     no_improv = 0
     while no_improv < max_no_improvement:

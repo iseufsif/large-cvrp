@@ -1,6 +1,16 @@
 import random
 
 def randomized_savings(instance, alpha=0.3):
+    """
+    Generates a random solution for VRP starting from the savings algorithm
+    In each iteration, it selects a random saving among the top #alpha and creates a route
+    with that couple of nodes
+
+    Not yet working as intended, thus excluded from the benchmark
+
+    Return:
+        List[List[int]]: random solution for VRP
+    """
     n = len(instance["demand"])
     demands = instance["demand"]
     capacity = instance["capacity"]
@@ -56,6 +66,6 @@ def randomized_savings(instance, alpha=0.3):
     if all_customers != expected:
         missing = expected - all_customers
         extra = all_customers - expected
-        raise RuntimeError(f"❌ Final savings routes inconsistent: Missing {missing}, Extra {extra}")
+        raise RuntimeError(f"Final savings routes inconsistent: Missing {missing}, Extra {extra}")
 
     return routes
