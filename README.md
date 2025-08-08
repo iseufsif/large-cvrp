@@ -148,6 +148,6 @@ Subramanian, A., Uchoa, E., & Ochi, L.S. (2013). A hybrid algorithm for a class 
 
 Vidal, T. (2022). Hybrid genetic search for the CVRP: Open-source implementation and SWAP* neighborhood. Computers & Operations Research, 140, 105643. https://doi.org/10.1016/j.cor.2021.105643
 
-
+Library used to download instances and solutions: https://github.com/PyVRP/VRPLIB
 
 
